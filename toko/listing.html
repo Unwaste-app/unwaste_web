@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <script src="../assets/static-shim.js"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Kelola Listing · Unwaste Mitra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <style>html,body{margin:0}body{overscroll-behavior:none}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}input[type=range]{accent-color:#2B6085}:focus-visible{outline:2px solid #5D8BB6;outline-offset:2px}</style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/tailwind-config.js"></script>
+    <script src="shared.js"></script>
+  </head>
+  <body>
+    <main></main>
+    <script>
+
+const {rp,esc,icon,$,$$}=UWT;
+const CATS=[['bakery','Bakery & Pastry'],['berat','Makanan Berat'],['minum','Minuman & Dessert'],['sehat','Sayur & Buah']];
+const TAGS=[['halal','100% Halal'],['gluten','Mengandung Gluten'],['dairy','Dairy / Susu'],['nutfree','Bebas Kacang'],['vegetarian','Vegetarian']];
+const PHOTOS=['pastry','almond','quiche','loaf','box','croissant'];
+const q=new URLSearchParams(location.search);
+let tab='semua',search='',form=null,editId=null;
+const blank=()=>({name:'',type:'box',cat:'bakery',orig:'',price:'',stock:5,from:UWT.db().shop.from,to:UWT.db().shop.to,pub:'now',publishAt:'18:00',img:UWT.IMG.pastry,tags:['halal'],desc:''});
+const openForm=id=>{editId=id||null;if(id){const l=UWT.listing(id);form={...l,pub:l.status==='jadwal'?'sched':'now',publishAt:l.publishAt||'18:00',tags:[...l.tags]}}else form=blank();UWT.refresh();setTimeout(()=>$('#fName')&&$('#fName').scrollIntoView({block:'center'}),50)};
+const tabs=[['semua','Semua'],['aktif','Tayang'],['jeda','Dijeda'],['jadwal','Terjadwal'],['habis','Habis'],['draft','Draft']];
+UWT.boot({active:'listing',
+render(){
+ if(!form)form=q.get('edit')&&UWT.listing(q.get('edit'))?(()=>{editId=q.get('edit');const l=UWT.listing(editId);return{...l,pub:l.status==='jadwal'?'sched':'now',publishAt:l.publishAt||'18:00',tags:[...l.tags]}})():blank();
+ const D=UWT.db(),all=D.listings,cnt=k=>k==='semua'?all.length:all.filter(l=>UWT.lstate(l)===k).length;
+ const st=UWT.stats();
+ const list=all.filter(l=>(tab==='semua'||UWT.lstate(l)===tab)&&(!search||l.name.toLowerCase().includes(search.toLowerCase())));
+ const f=form,pct=f.orig>0&&f.price>0?Math.round((1-f.price/f.orig)*100):0;
+ const act=all.filter(l=>['aktif','jeda'].includes(UWT.lstate(l)));
+ const nextClose=act.length?act.map(l=>l.to).sort()[0]:'—';
+ $('main').innerHTML=`
+ <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5"><div><p class="text-label-md text-primary font-bold uppercase tracking-wide">Operasional toko</p><h1 class="text-headline-md lg:text-headline-lg font-bold">Kelola & Terbitkan Makanan Surplus</h1><p class="text-body-md text-on-surface-variant max-w-2xl mt-1">Unggah makanan layak konsumsi yang belum terjual sebelum toko tutup. Listing yang tayang langsung muncul bagi konsumen di sekitar toko.</p></div>
+  <button id="newBtn" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-primary text-on-primary text-label-lg font-bold shadow-md shrink-0">${icon('add_circle','text-[20px]')}Buat Listing Baru</button></div>
+ <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-5">
+  ${UWT.stat('inventory_2','Porsi tersedia',st.stock+' porsi')}
+  ${UWT.stat('savings','Pendapatan dari surplus',rp(st.rev),'','text-discount-green')}
+  ${UWT.stat('hourglass_bottom','Batas pickup terdekat',nextClose==='—'?'—':nextClose+' WIB')}
+  ${UWT.stat('eco','Limbah dicegah',st.co2.toFixed(1).replace('.',',')+' kg','CO₂e dari pesanan selesai','text-discount-green')}
+ </section>
+ <div class="grid lg:grid-cols-[minmax(0,430px)_minmax(0,1fr)] gap-4 items-start">
+  <form id="lForm" novalidate class="bg-surface-card rounded-2xl p-5 lg:p-6 shadow-[0_1px_8px_rgba(0,0,0,.04)] flex flex-col gap-4">
+   <div class="flex items-center justify-between gap-2"><h2 class="text-headline-sm font-bold flex items-center gap-2">${icon('bolt','text-primary')}${editId?'Edit Listing':'Buat Listing Baru'}</h2>${editId?'<button type="button" id="cancelEdit" class="text-label-lg font-semibold text-text-muted hover:text-primary">Batal edit</button>':''}</div>
+   <div><p class="text-label-lg font-bold mb-2">Tipe makanan</p><div class="grid grid-cols-2 gap-1 p-1 rounded-xl bg-surface-container">${[['box','redeem','Surprise Box'],['spesifik','restaurant','Paket Spesifik']].map(([k,ic,t])=>`<button type="button" data-type="${k}" aria-pressed="${f.type===k}" class="py-2.5 rounded-lg text-label-lg font-semibold inline-flex items-center justify-center gap-1.5 ${f.type===k?'bg-surface-card text-primary shadow-sm':'text-text-muted'}">${icon(ic,'text-[18px]')}${t}</button>`).join('')}</div>
+    <p class="text-body-sm text-text-muted mt-2">${f.type==='box'?'<b>Surprise Box</b>: isi dipilih toko dari sisa hari ini — konsumen tahu nilainya, bukan isinya.':'<b>Paket Spesifik</b>: isi menu sudah jelas dan ditulis di deskripsi.'}</p></div>
+   <div><label class="text-label-lg font-bold" for="fName">Nama produk / paket</label><input id="fName" maxlength="60" value="${esc(f.name)}" placeholder="Contoh: Artisan Pastry Surprise Pack" class="mt-1.5 w-full rounded-xl bg-surface-container-low border border-transparent focus:border-primary px-4 py-3"/><p class="err text-body-sm text-error mt-1 hidden" data-for="name"></p></div>
+   <div><p class="text-label-lg font-bold mb-2">Kategori</p><div class="flex flex-wrap gap-2">${CATS.map(([k,t])=>`<button type="button" data-cat="${k}" aria-pressed="${f.cat===k}" class="px-3 py-1.5 rounded-full text-label-md font-semibold ${f.cat===k?'bg-primary text-on-primary':'bg-surface-container text-on-surface-variant'}">${t}</button>`).join('')}</div></div>
+   <div><label class="text-label-lg font-bold" for="fDesc">Deskripsi singkat (dilihat konsumen)</label><textarea id="fDesc" rows="2" maxlength="160" placeholder="Isi paket, cara menghangatkan, dll." class="mt-1.5 w-full rounded-xl bg-surface-container-low border border-transparent focus:border-primary px-4 py-3 text-body-md">${esc(f.desc)}</textarea></div>
+   <div class="rounded-xl bg-surface-container-low p-4"><div class="flex justify-between items-center mb-3"><h3 class="text-label-lg font-bold">Harga & diskon</h3><span class="text-label-sm font-bold text-discount-green bg-discount-green/10 px-2 py-1 rounded">Disarankan 50–65%</span></div>
+    <div class="grid grid-cols-2 gap-3"><div><label class="text-body-sm text-text-muted" for="fOrig">Harga normal</label><div class="flex items-center mt-1 rounded-lg bg-surface-card px-3"><span class="text-text-muted text-body-md">Rp</span><input id="fOrig" inputmode="numeric" value="${f.orig||''}" placeholder="50000" class="w-full bg-transparent py-2.5 pl-2 font-bold"/></div></div>
+    <div><label class="text-body-sm text-text-muted" for="fPrice">Harga surplus</label><div class="flex items-center mt-1 rounded-lg bg-sky-blue/40 px-3"><span class="text-primary text-body-md">Rp</span><input id="fPrice" inputmode="numeric" value="${f.price||''}" placeholder="19000" class="w-full bg-transparent py-2.5 pl-2 font-bold text-primary"/></div></div></div>
+    <div class="flex justify-between items-center mt-4 text-body-sm"><span class="text-text-muted">Diskon</span><b id="pctLbl" class="text-discount-orange">${pct?pct+'% OFF':'—'}</b></div>
+    <input id="fPct" type="range" min="30" max="80" step="1" value="${pct>=30&&pct<=80?pct:60}" aria-label="Persentase diskon" class="w-full mt-1"/><div class="flex justify-between text-label-sm text-text-muted"><span>30%</span><span>50%</span><span>65%</span><span>80%</span></div>
+    <p class="err text-body-sm text-error mt-1 hidden" data-for="price"></p></div>
+   <div class="grid grid-cols-2 gap-3"><div><p class="text-label-lg font-bold mb-1.5">Porsi tersedia</p><div class="flex items-center justify-between bg-surface-container-low rounded-xl p-1"><button type="button" id="stDec" aria-label="Kurangi porsi" class="w-10 h-10 rounded-lg hover:bg-surface-container flex items-center justify-center">${icon('remove')}</button><b id="stVal" class="text-title-md">${f.stock}</b><button type="button" id="stInc" aria-label="Tambah porsi" class="w-10 h-10 rounded-lg hover:bg-surface-container flex items-center justify-center">${icon('add')}</button></div></div>
+    <div><p class="text-label-lg font-bold mb-1.5">Jam pickup</p><div class="flex items-center gap-1"><input id="fFrom" type="time" value="${f.from}" aria-label="Pickup mulai" class="w-full min-w-0 rounded-xl bg-surface-container-low px-2 py-2.5 text-body-md"/><span class="text-text-muted">–</span><input id="fTo" type="time" value="${f.to}" aria-label="Pickup selesai" class="w-full min-w-0 rounded-xl bg-surface-container-low px-2 py-2.5 text-body-md"/></div></div></div>
+   <p class="err text-body-sm text-error -mt-2 hidden" data-for="time"></p>
+   <div><p class="text-label-lg font-bold mb-2">Foto</p><div class="grid grid-cols-6 gap-2">${PHOTOS.map(k=>`<button type="button" data-img="${k}" aria-label="Foto ${k}" aria-pressed="${f.img===UWT.IMG[k]}" class="aspect-square rounded-lg overflow-hidden border-2 ${f.img===UWT.IMG[k]?'border-primary':'border-transparent'}"><img src="${UWT.IMG[k]}" alt="" class="w-full h-full object-cover"/></button>`).join('')}</div></div>
+   <div><p class="text-label-lg font-bold mb-2">Informasi pangan & alergen</p><div class="grid grid-cols-2 gap-2">${TAGS.map(([k,t])=>`<label class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-low text-body-sm cursor-pointer"><input type="checkbox" data-tag="${k}" ${f.tags.includes(k)?'checked':''} class="accent-primary w-4 h-4"/>${t}</label>`).join('')}</div></div>
+   <div><p class="text-label-lg font-bold mb-2">Kapan ditayangkan?</p><div class="flex flex-col gap-2"><label class="flex items-center gap-2 text-body-md cursor-pointer"><input type="radio" name="pub" value="now" ${f.pub==='now'?'checked':''} class="accent-primary"/>Tayang sekarang</label><label class="flex items-center gap-2 text-body-md cursor-pointer"><input type="radio" name="pub" value="sched" ${f.pub==='sched'?'checked':''} class="accent-primary"/>Jadwalkan pukul <input id="fPubAt" type="time" value="${f.publishAt}" ${f.pub==='sched'?'':'disabled'} class="rounded-lg bg-surface-container-low px-2 py-1 disabled:opacity-40"/></label></div></div>
+   <div class="flex gap-2 pt-1"><button type="submit" class="flex-1 py-3.5 rounded-xl bg-primary text-on-primary text-label-lg font-bold inline-flex items-center justify-center gap-2 shadow-md">${icon('cloud_upload','text-[20px]')}${editId?'Simpan Perubahan':f.pub==='sched'?'Jadwalkan Listing':'Terbitkan ke Marketplace'}</button><button type="button" id="draftBtn" title="Simpan sebagai draft" class="px-4 rounded-xl bg-surface-container text-primary font-bold text-label-lg">Draft</button></div>
+  </form>
+  <section class="flex flex-col gap-4 min-w-0">
+   <div class="bg-surface-card rounded-2xl p-4 shadow-[0_1px_8px_rgba(0,0,0,.04)] flex flex-col gap-3">
+    <div class="flex gap-1 overflow-x-auto" role="tablist">${tabs.map(([k,t])=>`<button role="tab" data-tab="${k}" aria-selected="${tab===k}" class="px-3.5 py-2 rounded-lg text-label-lg font-semibold whitespace-nowrap ${tab===k?'bg-primary text-on-primary':'text-on-surface-variant hover:bg-surface-container-low'}">${t} (${cnt(k)})</button>`).join('')}</div>
+    <div class="flex items-center gap-2 bg-surface-container-low rounded-xl px-3">${icon('search','text-[20px] text-text-muted')}<input id="srch" value="${esc(search)}" placeholder="Cari paket…" aria-label="Cari paket" class="bg-transparent py-2 w-full text-body-md"/></div></div>
+   <div class="flex flex-col gap-3">${list.length?list.map(l=>{const k=UWT.lstate(l);const chip={aktif:['Tayang','bg-discount-green/10 text-discount-green'],jeda:['Dijeda','bg-tertiary-fixed text-tertiary'],jadwal:['Terjadwal '+(l.publishAt||'')+' WIB','bg-sky-blue/60 text-on-primary-fixed'],habis:['Habis','bg-surface-container text-text-muted'],draft:['Draft','bg-surface-container text-text-muted']}[k];
+    return `<article class="bg-surface-card rounded-2xl p-4 shadow-[0_1px_8px_rgba(0,0,0,.04)] flex gap-4 ${editId===l.id?'ring-2 ring-primary':''}">
+     <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-xl overflow-hidden bg-surface-container"><img src="${l.img}" alt="" class="w-full h-full object-cover ${k==='habis'?'grayscale':''}"/><span class="absolute top-1.5 left-1.5 text-[11px] font-bold bg-discount-orange text-white px-1.5 py-0.5 rounded">-${UWT.pct(l)}%</span></div>
+     <div class="min-w-0 flex-1 flex flex-col"><div class="flex flex-wrap items-center gap-2"><span class="text-label-sm font-bold px-2 py-0.5 rounded-full ${chip[1]}">${chip[0]}</span><span class="text-label-sm text-text-muted">${l.type==='box'?'Surprise Box':'Menu Spesifik'}</span></div>
+      <h3 class="text-title-md font-bold mt-1 leading-snug">${esc(l.name)}</h3>
+      <p class="mt-0.5"><b class="text-title-md text-primary">${rp(l.price)}</b> <s class="text-body-sm text-text-muted">${rp(l.orig)}</s></p>
+      <p class="text-body-sm text-text-muted mt-1 flex flex-wrap gap-x-4 gap-y-1"><span class="inline-flex items-center gap-1">${icon('schedule','text-[16px]')}Pickup ${l.from}–${l.to}</span><span class="inline-flex items-center gap-1 ${l.stock>0&&l.stock<=2?'text-discount-orange font-semibold':''}">${icon('inventory_2','text-[16px]')}${l.stock>0?'Sisa '+l.stock+' porsi':'Terjual '+UWT.sold(l)+' porsi'}</span></p>
+      <div class="flex flex-wrap items-center gap-2 mt-auto pt-3">
+       ${k==='aktif'||k==='jeda'?`<label class="inline-flex items-center gap-2 text-label-md font-semibold cursor-pointer"><span class="relative inline-block w-11 h-6"><input type="checkbox" data-live="${l.id}" ${k==='aktif'?'checked':''} class="peer sr-only" aria-label="Tayangkan ${esc(l.name)}"/><span class="absolute inset-0 rounded-full bg-outline-variant peer-checked:bg-discount-green transition-colors peer-focus-visible:ring-2 ring-primary"></span><span class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5"></span></span>${k==='aktif'?'Tayang':'Dijeda'}</label>`:''}
+       ${k==='habis'?`<button data-restock="${l.id}" class="px-3 py-1.5 rounded-lg bg-sky-blue/60 text-on-primary-fixed text-label-md font-bold">Terbitkan lagi</button>`:''}
+       ${k==='jadwal'?`<button data-now="${l.id}" class="px-3 py-1.5 rounded-lg bg-sky-blue/60 text-on-primary-fixed text-label-md font-bold">Tayangkan sekarang</button>`:''}
+       ${k==='draft'?`<button data-now="${l.id}" class="px-3 py-1.5 rounded-lg bg-primary text-on-primary text-label-md font-bold">Terbitkan</button>`:''}
+       <span class="ml-auto flex gap-1"><button data-edit="${l.id}" aria-label="Edit ${esc(l.name)}" class="w-9 h-9 rounded-lg bg-surface-container hover:bg-surface-dim flex items-center justify-center text-primary">${icon('edit','text-[18px]')}</button><button data-del="${l.id}" aria-label="Hapus ${esc(l.name)}" class="w-9 h-9 rounded-lg bg-surface-container hover:bg-error-container flex items-center justify-center text-error">${icon('delete','text-[18px]')}</button></span></div></div></article>`}).join(''):`<div class="bg-surface-card rounded-2xl p-8 text-center"><span class="material-symbols-outlined text-[40px] text-text-muted">inventory_2</span><p class="text-title-md font-bold mt-2">Tidak ada listing di sini</p><p class="text-body-md text-text-muted">${search?'Coba kata kunci lain.':'Buat listing baru lewat form di samping.'}</p></div>`}</div>
+   <div class="rounded-2xl bg-surface-container p-4 text-body-sm text-on-surface-variant flex gap-3">${icon('lightbulb','text-primary')}<span><b>Tips:</b> listing yang tayang pukul 18:00–19:00 biasanya lebih cepat habis karena pembeli baru pulang kerja.</span></div>
+  </section></div>`;
+},
+after(){
+ const D=UWT.db(),f=form;const num=v=>+String(v).replace(/\D/g,'')||0;
+ const syncPct=()=>{const p=f.orig>0&&f.price>0?Math.round((1-f.price/f.orig)*100):0;$('#pctLbl').textContent=p?p+' OFF'.replace(' OFF','% OFF'):'—';if(p>=30&&p<=80)$('#fPct').value=p};
+ const rf=()=>{read();UWT.refresh()};
+ const read=()=>{f.name=$('#fName').value;f.desc=$('#fDesc').value;f.orig=num($('#fOrig').value);f.price=num($('#fPrice').value);f.from=$('#fFrom').value;f.to=$('#fTo').value;f.publishAt=$('#fPubAt').value;f.pub=$('[name=pub]:checked').value};
+ $('#newBtn').onclick=()=>{form=null;editId=null;history.replaceState(null,'','listing.html');form=blank();UWT.refresh();$('#fName').focus()};
+ const ce=$('#cancelEdit');ce&&(ce.onclick=()=>{editId=null;form=blank();history.replaceState(null,'','listing.html');UWT.refresh()});
+ $$('[data-type]').forEach(b=>b.onclick=()=>{read();f.type=b.dataset.type;UWT.refresh()});
+ $$('[data-cat]').forEach(b=>b.onclick=()=>{read();f.cat=b.dataset.cat;UWT.refresh()});
+ $$('[data-img]').forEach(b=>b.onclick=()=>{read();f.img=UWT.IMG[b.dataset.img];UWT.refresh()});
+ $$('[data-tag]').forEach(c=>c.onchange=()=>{f.tags=$$('[data-tag]:checked').map(x=>x.dataset.tag)});
+ $$('[name=pub]').forEach(r=>r.onchange=()=>{read();UWT.refresh()});
+ $('#fOrig').oninput=()=>{read();if(f.orig>0&&$('#fPct').dataset.touch){f.price=Math.round(f.orig*(1-$('#fPct').value/100)/500)*500;$('#fPrice').value=f.price}syncPct()};
+ $('#fPrice').oninput=()=>{read();syncPct()};
+ $('#fPct').oninput=e=>{read();$('#fPct').dataset.touch=1;if(f.orig>0){f.price=Math.round(f.orig*(1-e.target.value/100)/500)*500;$('#fPrice').value=f.price}$('#pctLbl').textContent=e.target.value+'% OFF'};
+ $('#stDec').onclick=()=>{f.stock=Math.max(1,f.stock-1);$('#stVal').textContent=f.stock};$('#stInc').onclick=()=>{f.stock=Math.min(99,f.stock+1);$('#stVal').textContent=f.stock};
+ const validate=draft=>{read();const er={};
+  if(!f.name.trim())er.name='Nama produk wajib diisi.';
+  if(!draft){if(!(f.orig>0))er.price='Isi harga normal.';else if(!(f.price>0))er.price='Isi harga surplus atau geser slider diskon.';else if(f.price>=f.orig)er.price='Harga surplus harus lebih murah dari harga normal.';else if(UWT.pct({price:f.price,orig:f.orig})<30)er.price='Diskon minimal 30% agar menarik bagi konsumen.';
+   if(!f.from||!f.to||f.from>=f.to)er.time='Jam pickup selesai harus setelah jam mulai.';}
+  $$('.err').forEach(e=>{const m=er[e.dataset.for];e.textContent=m||'';e.classList.toggle('hidden',!m)});
+  const first=Object.keys(er)[0];if(first){const t=$('[data-for='+first+']');t&&t.scrollIntoView({block:'center',behavior:'smooth'});UWT.toast('Periksa isian yang bertanda merah')}return!first};
+ const save=draft=>{if(!validate(draft))return;
+  const rec={name:f.name.trim(),type:f.type,cat:f.cat,orig:f.orig||0,price:f.price||0,stock:f.stock,from:f.from,to:f.to,img:f.img,tags:f.tags,desc:f.desc.trim()};
+  rec.status=draft?'draft':f.pub==='sched'?'jadwal':'aktif';if(f.pub==='sched')rec.publishAt=f.publishAt;
+  if(draft&&!rec.orig){rec.orig=1;rec.price=1}
+  if(editId){const l=UWT.listing(editId);const keep=l.status==='jeda'&&rec.status==='aktif'?'jeda':rec.status;Object.assign(l,rec,{status:keep})}
+  else D.listings.unshift({id:'l'+Date.now().toString(36),...rec});
+  UWT.save();UWT.toast(draft?'Disimpan sebagai draft':editId?'Perubahan disimpan':f.pub==='sched'?'Listing dijadwalkan':'Listing tayang di marketplace');
+  editId=null;form=blank();history.replaceState(null,'','listing.html');tab=draft?'draft':'semua';UWT.refresh();scrollTo({top:0,behavior:'smooth'})};
+ $('#lForm').onsubmit=e=>{e.preventDefault();save(false)};
+ $('#draftBtn').onclick=()=>save(true);
+ $$('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;rf()});
+ $('#srch').oninput=e=>{search=e.target.value;const p=e.target.selectionStart;rf();const s=$('#srch');s.focus();s.setSelectionRange(p,p)};
+ $$('[data-live]').forEach(c=>c.onchange=()=>{const l=UWT.listing(c.dataset.live);l.status=c.checked?'aktif':'jeda';UWT.save();UWT.toast(c.checked?'Listing tayang':'Listing dijeda — tidak tampil bagi konsumen');rf()});
+ $$('[data-edit]').forEach(b=>b.onclick=()=>openForm(b.dataset.edit));
+ $$('[data-now]').forEach(b=>b.onclick=()=>{const l=UWT.listing(b.dataset.now);if(!(l.orig>1&&l.price>=1&&l.price<l.orig)){UWT.toast('Lengkapi harga dulu lewat Edit');openForm(l.id);return}l.status='aktif';delete l.publishAt;UWT.save();UWT.toast('Listing tayang');rf()});
+ $$('[data-del]').forEach(b=>b.onclick=()=>{const l=UWT.listing(b.dataset.del);UWT.confirm('Hapus listing?','“'+esc(l.name)+'” akan dihapus permanen dari daftar. Pesanan yang sudah masuk tidak terpengaruh.','Hapus',()=>{D.listings=D.listings.filter(x=>x.id!==l.id);const was=editId===l.id;if(was){editId=null;form=blank()}UWT.save();UWT.toast('Listing dihapus');was?UWT.refresh():rf()},true)});
+ $$('[data-restock]').forEach(b=>b.onclick=()=>{const l=UWT.listing(b.dataset.restock);
+  const m=UWT.modal(`<h2 class="text-headline-sm font-bold mb-1">Terbitkan lagi</h2><p class="text-body-md text-text-muted mb-4">${esc(l.name)}</p><label class="text-label-md text-text-muted" for="rsQ">Jumlah porsi</label><input id="rsQ" type="number" min="1" max="99" value="3" class="w-full mt-1 mb-4 rounded-xl bg-surface-container-low px-4 py-3 text-title-md font-bold"/><div class="grid grid-cols-2 gap-2"><button id="rsNo" class="py-3 rounded-xl bg-surface-container text-label-lg font-bold">Batal</button><button id="rsYes" class="py-3 rounded-xl bg-primary text-on-primary text-label-lg font-bold">Tayangkan</button></div>`);
+  $('#rsNo',m).onclick=UWT.close;$('#rsYes',m).onclick=()=>{const n=+$('#rsQ',m).value;if(!(n>=1&&n<=99)){UWT.toast('Isi jumlah 1–99');return}l.stock=n;l.status='aktif';UWT.save();UWT.close();UWT.toast('Listing tayang lagi');rf()}})}
+});
+
+</script>
+  </body>
+</html>

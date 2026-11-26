@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <script src="../assets/static-shim.js"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Laporan · Unwaste Mitra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <style>html,body{margin:0}body{overscroll-behavior:none}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}input[type=range]{accent-color:#2B6085}:focus-visible{outline:2px solid #5D8BB6;outline-offset:2px}</style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/tailwind-config.js"></script>
+    <script src="shared.js"></script>
+  </head>
+  <body>
+    <main></main>
+    <script>
+
+const {rp,esc,icon,$,$$}=UWT;
+let per=7;
+/* riwayat 30 hari sebelumnya: contoh data deterministik (belum ada data nyata sebelum hari ini) */
+const hist=(()=>{const a=[];for(let i=30;i>=1;i--){const d=new Date();d.setDate(d.getDate()-i);const w=d.getDay();const por=12+((i*7+3)%9)+(w===5||w===6?6:0);const sold=Math.min(por,por-((i*5)%3));a.push({d,por:sold,avail:por+((i*3)%4)+1,rev:sold*(19000+(i%4)*1500)})}return a})();
+const fmtD=d=>d.toLocaleDateString('id-ID',{day:'numeric',month:'short'});
+const TOP=[['Artisan Pastry & Sourdough Surprise Pack',0.34],['Duo Almond Croissant Butter Gold',0.22],['Surprise Box Roti Manis & Savory',0.2],['Rustic Country Sourdough Loaf',0.14],['Croissant Butter & Choco Danish Duo',0.1]];
+UWT.boot({active:'laporan',
+render(){
+ const st=UWT.stats();
+ const today={d:new Date(),por:st.porDone,avail:st.sold+st.stock,rev:st.revDone,sold:st.sold,today:1};
+ let rows=[today,...hist.slice().reverse()].slice(0,per).reverse();
+ const rev=rows.reduce((a,r)=>a+r.rev,0),por=rows.reduce((a,r)=>a+r.por,0),av=rows.reduce((a,r)=>a+r.avail,0);
+ const sell=av?Math.round(por/av*100):0,co2=por*UWT.CO2;
+ const mx=Math.max(...rows.map(r=>r.rev),1);
+ const chart=rows.map(r=>`<div class="flex-1 min-w-0 flex flex-col items-center gap-1 group" title="${fmtD(r.d)}: ${rp(r.rev)} · ${r.por} porsi"><span class="text-label-sm text-text-muted opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">${Math.round(r.rev/1000)}rb</span><div class="w-full flex-1 flex items-end"><div class="w-full rounded-t-md ${r.today?'bg-primary':'bg-primary-container'}" style="height:${Math.max(3,r.rev/mx*100)}%"></div></div><span class="text-[10px] text-text-muted whitespace-nowrap ${per>14&&!r.today?'hidden xl:block':''}">${per>14?fmtD(r.d).split(' ')[0]:fmtD(r.d)}</span></div>`).join('');
+ const k=per===1?1:per;
+ $('main').innerHTML=`
+ <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5"><div><p class="text-label-md text-primary font-bold uppercase tracking-wide">Analitik toko</p><h1 class="text-headline-md lg:text-headline-lg font-bold">Laporan Penjualan & Dampak Limbah</h1><p class="text-body-md text-on-surface-variant mt-1">Pendapatan dari makanan surplus dan berapa banyak yang berhasil diselamatkan.</p></div>
+  <div class="flex gap-2 items-center"><div class="flex p-1 rounded-xl bg-surface-container" role="tablist">${[[1,'Hari ini'],[7,'7 hari'],[30,'30 hari']].map(([v,t])=>`<button role="tab" data-per="${v}" aria-selected="${per===v}" class="px-4 py-2 rounded-lg text-label-lg font-semibold ${per===v?'bg-surface-card text-primary shadow-sm':'text-text-muted'}">${t}</button>`).join('')}</div><button id="csv" class="px-4 py-2.5 rounded-xl bg-primary text-on-primary text-label-lg font-bold inline-flex items-center gap-1.5">${icon('download','text-[18px]')}Ekspor CSV</button></div></div>
+ <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+  ${UWT.stat('payments','Pendapatan surplus',rp(rev),per===1?'Pesanan yang sudah diambil':'Rata-rata '+rp(rev/per)+' / hari','text-primary')}
+  ${UWT.stat('shopping_basket','Porsi terselamatkan',por+' porsi',per===1?'':'Rata-rata '+(por/per).toFixed(1).replace('.',',')+' / hari')}
+  ${UWT.stat('eco','CO₂e dicegah',co2.toFixed(1).replace('.',',')+' kg','≈ '+(por*0.4).toFixed(1).replace('.',',')+' kg makanan','text-discount-green')}
+  ${UWT.stat('percent','Tingkat habis terjual',sell+'%','dari porsi yang dilisting',sell>=80?'text-discount-green':'text-discount-orange')}
+ </section>
+ <div class="grid lg:grid-cols-[minmax(0,1fr)_380px] gap-4 mt-4 items-start">
+  <section class="bg-surface-card rounded-2xl p-5 lg:p-6 shadow-[0_1px_8px_rgba(0,0,0,.04)]"><h2 class="text-headline-sm font-bold">Pendapatan per hari</h2><p class="text-body-sm text-text-muted mb-4">Hari ini ditandai biru tua. Arahkan kursor ke batang untuk detail.</p>
+   <div class="h-56 flex items-stretch gap-1 sm:gap-2 border-b border-border-subtle">${chart}</div>
+   ${per>1?`<div class="mt-5 overflow-x-auto"><table class="w-full text-body-sm"><thead><tr class="text-left text-text-muted border-b border-border-subtle"><th class="py-2 font-semibold">Tanggal</th><th class="py-2 font-semibold text-right">Porsi</th><th class="py-2 font-semibold text-right">Habis terjual</th><th class="py-2 font-semibold text-right">Pendapatan</th></tr></thead><tbody>${rows.slice().reverse().slice(0,7).map(r=>`<tr class="border-b border-border-subtle/60"><td class="py-2">${fmtD(r.d)}${r.today?' <span class="text-label-sm bg-sky-blue/60 px-1.5 py-0.5 rounded-full">hari ini</span>':''}</td><td class="py-2 text-right">${r.por}</td><td class="py-2 text-right">${r.avail?Math.round(r.por/r.avail*100):0}%</td><td class="py-2 text-right font-semibold">${rp(r.rev)}</td></tr>`).join('')}</tbody></table></div>`:''}
+  </section>
+  <aside class="flex flex-col gap-4">
+   <section class="bg-surface-card rounded-2xl p-5 lg:p-6 shadow-[0_1px_8px_rgba(0,0,0,.04)]"><h2 class="text-headline-sm font-bold mb-3">Produk terlaris</h2><ol class="flex flex-col gap-3">${TOP.map(([n,w],i)=>{const u=Math.max(i===0&&per===1?st.sold:0,Math.round(por*w));return `<li><div class="flex justify-between gap-3 text-body-sm"><span class="truncate"><b class="text-primary mr-1">${i+1}.</b>${n}</span><b>${u} porsi</b></div><div class="h-1.5 rounded-full bg-surface-container mt-1.5"><div class="h-full rounded-full bg-primary-container" style="width:${w/TOP[0][1]*100}%"></div></div></li>`}).join('')}</ol></section>
+   <section class="rounded-2xl bg-tertiary-fixed text-on-tertiary-fixed p-5"><p class="text-label-md font-bold uppercase tracking-wide inline-flex items-center gap-1.5">${icon('lightbulb','text-[18px]')}Insight</p><p class="text-body-md mt-1">${sell>=85?'Hampir semua porsi habis terjual. Coba tambah 2–3 porsi di jam ramai.':'Masih ada porsi tersisa. Turunkan harga sedikit atau tayangkan lebih awal agar lebih banyak yang terjual.'}</p></section>
+   <p class="text-body-sm text-text-muted px-1">Data hari ini dihitung dari pesanan nyata. Riwayat hari-hari sebelumnya berupa data contoh karena toko ini baru dibuat di prototipe.</p>
+  </aside></div>`;
+},
+after(){
+ $$('[data-per]').forEach(b=>b.onclick=()=>{per=+b.dataset.per;UWT.refresh()});
+ $('#csv').onclick=()=>{const st=UWT.stats();const rows=[['Tanggal','Porsi terselamatkan','Porsi dilisting','Pendapatan (Rp)']];
+  [{d:new Date(),por:st.porDone,avail:st.sold+st.stock,rev:st.revDone},...hist.slice().reverse()].slice(0,per).reverse().forEach(r=>rows.push([r.d.toISOString().slice(0,10),r.por,r.avail,r.rev]));
+  const blob=new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='laporan-unwaste.csv';document.body.appendChild(a);a.click();a.remove();UWT.toast('Laporan diunduh')}
+}});
+
+</script>
+  </body>
+</html>

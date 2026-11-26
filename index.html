@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <script src="assets/static-shim.js"></script>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="web_standard" name="shell-type"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config" src="assets/tailwind-config.js"></script>
+    <style>[hidden]{display:none!important}</style>
+  </head>
+  <body class="bg-surface font-body-md text-on-surface antialiased">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-surface-card/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-7xl mx-auto px-margin-lg flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-lg shrink-0"><a class="flex flex-col" href="index.html"><span class="font-headline-md text-headline-md text-primary font-bold tracking-tight leading-none">Unwaste</span><span class="font-label-sm text-label-sm text-text-muted mt-0.5 tracking-wider uppercase">Save food, save money</span></a></div><div class="flex-1 max-w-none hidden md:flex items-center bg-surface-container-low rounded-xl px-space-sm py-2 focus-within:ring-2 focus-within:ring-primary focus-within:bg-surface-card transition-all"><span class="material-symbols-outlined text-outline mr-2 text-[20px]">search</span><input class="w-full bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-text-muted focus:outline-none" placeholder="Cari roti lezat, katering, resto..." type="text"/></div><nav class="hidden xl:flex items-center gap-space-md shrink-0" data-active-classes="text-primary font-bold"><a aria-current="page" class="transition-colors py-1 text-primary font-bold" data-path="jelajah" href="index.html">Jelajah</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-1" data-path="random-pick" href="random-pick.html">Random Pick</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-1" data-path="surprise-box" href="surprise-box.html">Surprise Box</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors py-1" data-path="riwayat-pesanan" href="riwayat.html">Riwayat Pesanan</a></nav><div class="flex items-center gap-space-sm shrink-0"><div class="flex items-center gap-1"></div><div class="flex items-center gap-2 pl-2"><div class="hidden md:flex flex-col items-end"><span class="font-label-sm text-label-sm font-semibold text-discount-green bg-surface-container-low px-2 py-0.5 rounded-full">🌱 12.4 kg CO2e</span></div><a href="login.html" title="Keluar / ganti akun" aria-label="Keluar atau ganti akun" onclick="if(confirm('Keluar dari akun?')){try{UWMEM.removeItem('uw_session')}catch(e){}location.href='login.html'}return false" class="w-8 h-8 rounded-full bg-primary flex items-center justify-center cursor-pointer shadow-sm"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></a></div></div></div></header><main class="w-full pt-20 bg-surface min-h-[calc(100vh-20rem)]"><div class="flex flex-col w-full">
+        <!-- IMPACT & HERO HEADER SECTION (Soft Blue Canvas with Stat Clusters) -->
+        <section class="w-full bg-gradient-to-b from-surface-container-low via-surface to-surface pb-space-lg pt-space-md">
+          <div class="max-w-7xl mx-auto px-margin-lg">
+            <!-- Top Meta Bar: Active Location Pill & Quick Impact Tracker -->
+            <div class="flex flex-wrap items-center justify-between gap-gutter pb-space-sm">
+              <div class="flex items-center gap-space-xs">
+                <div class="inline-flex items-center gap-1.5 bg-surface-card px-3 py-1.5 rounded-full shadow-sm text-text-primary">
+                  <span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">near_me</span>
+                  <span class="font-label-md text-label-md">Jelajah Area:</span>
+                  <span class="font-label-md text-label-md text-primary font-bold">Kemanggisan, Jakarta Barat</span>
+                  <span class="font-body-sm text-body-sm text-text-muted">(Radius 2 km)</span>
+                </div>
+                <button class="text-secondary hover:text-primary font-label-md text-label-md underline ml-1 cursor-pointer" type="button">
+                  Ganti Radius
+                </button>
+              </div>
+              <div class="flex items-center gap-space-md">
+                <div class="flex items-center gap-1.5 font-label-md text-label-md text-discount-green bg-discount-green/10 px-3 py-1 rounded-full">
+                  <span class="material-symbols-outlined text-[16px]">verified</span>
+                  100% Layak &amp; Aman Konsumsi
+                </div>
+                <span class="font-label-sm text-label-sm text-text-muted hidden sm:inline">Pembaruan stok otomatis: 2 mnt lalu</span>
+              </div>
+            </div>
+            <!-- Impact Billboard Bento Card -->
+            <div class="relative overflow-hidden rounded-2xl bg-surface-card shadow-sm p-space-lg mt-space-xs">
+              <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center">
+                <!-- Billboard Left / Headline -->
+                <div class="lg:col-span-7 flex flex-col gap-space-xs">
+                  <div class="inline-flex items-center gap-2 self-start bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full font-label-sm text-label-sm tracking-wider uppercase font-bold">
+                    <span class="material-symbols-outlined text-[14px]">bolt</span>
+                    Hemat Pintar, Bumi Bugar
+                  </div>
+                  <h1 class="font-headline-lg text-headline-lg text-text-primary font-extrabold tracking-tight">
+                    Selamatkan Makanan Lezat, <br class="hidden sm:inline"/>
+                    <span class="text-primary">Hemat Hingga 70%</span>
+                  </h1>
+                  <p class="font-body-md text-body-md text-text-muted max-w-xl">
+                    Restoran, bakery, dan kafe pilihan di sekitarmu melepas surplus sajian terbaik mereka hari ini. Nikmati rasa prima, bayar sepertiga.
+                  </p>
+                </div>
+                <!-- Billboard Right / 3 Real-time Impact Metric Rings -->
+                <div class="lg:col-span-5 grid grid-cols-3 gap-space-sm bg-surface-container-low/70 p-space-md rounded-xl">
+                  <!-- Stat 1: Food Rescued -->
+                  <div class="flex flex-col items-center text-center p-2">
+                    <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary mb-1">
+                      <span class="material-symbols-outlined text-[22px]">restaurant</span>
+                    </div>
+                    <span class="font-title-md text-title-md text-text-primary font-extrabold tracking-tight">1.420 kg</span>
+                    <span class="font-label-sm text-label-sm text-text-muted leading-tight mt-0.5">Makanan Selamat</span>
+                  </div>
+                  <!-- Stat 2: CO2 Prevented -->
+                  <div class="flex flex-col items-center text-center p-2">
+                    <div class="w-10 h-10 rounded-full bg-discount-green/15 flex items-center justify-center text-discount-green mb-1">
+                      <span class="material-symbols-outlined text-[22px]">eco</span>
+                    </div>
+                    <span class="font-title-md text-title-md text-discount-green font-extrabold tracking-tight">2.840 kg</span>
+                    <span class="font-label-sm text-label-sm text-text-muted leading-tight mt-0.5">CO2e Dicegah</span>
+                  </div>
+                  <!-- Stat 3: Money Saved -->
+                  <div class="flex flex-col items-center text-center p-2">
+                    <div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary mb-1">
+                      <span class="material-symbols-outlined text-[22px]">savings</span>
+                    </div>
+                    <span class="font-title-md text-title-md text-tertiary-container font-extrabold tracking-tight">Rp 48,6 Jt</span>
+                    <span class="font-label-sm text-label-sm text-text-muted leading-tight mt-0.5">Hemat Dompet</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Ambient SVG Waves decoration (non-intrusive bottom corner) -->
+              <div class="absolute -right-8 -bottom-12 opacity-15 pointer-events-none text-sky-blue">
+                <svg fill="none" height="140" viewbox="0 0 220 140" width="220" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="110" cy="110" r="100" stroke="currentColor" stroke-dasharray="14 10" stroke-width="12"></circle>
+                  <circle cx="110" cy="110" r="70" stroke="currentColor" stroke-width="8"></circle>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- MAIN TWO-COLUMN BODY LAYOUT -->
+        <div class="w-full max-w-7xl mx-auto px-margin-lg py-space-md">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
+            <!-- ======================================================== -->
+            <!-- LEFT SIDEBAR: Persistent Filter & Refinements (280px ~ 3 cols) -->
+            <!-- ======================================================== -->
+            <aside class="lg:col-span-3 flex flex-col gap-space-md lg:sticky lg:top-24">
+              <!-- Sidebar Shell Card -->
+              <div class="bg-surface-card rounded-2xl shadow-sm p-space-md flex flex-col gap-space-md">
+                <!-- Filter Header: Active count & Clear all -->
+                <div class="flex items-center justify-between pb-space-xs">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[20px] text-primary">tune</span>
+                    <span class="font-title-sm text-title-sm text-text-primary font-bold">Filter Pilihan</span>
+                    <span class="bg-primary text-on-primary font-label-sm text-label-sm px-2 py-0.5 rounded-full" id="activeFilterBadge">3</span>
+                  </div>
+                  <button class="font-label-md text-label-md text-secondary hover:text-primary transition-colors cursor-pointer" id="resetFiltersBtn" type="button">
+                    Reset Semua
+                  </button>
+                </div>
+                <!-- FILTER SECTION 1: Budget Range & Quick Pills -->
+                <div class="flex flex-col gap-space-xs pt-space-xs">
+                  <div class="flex items-center justify-between">
+                    <label class="font-label-md text-label-md text-text-primary font-semibold" for="budgetRange">Batas Budget Maksimal</label>
+                    <span class="font-label-md text-label-md text-primary font-bold" id="budgetValueLabel">Rp 30.000</span>
+                  </div>
+                  <!-- Slider -->
+                  <input class="w-full accent-primary cursor-pointer h-2 bg-surface-container rounded-lg" id="budgetRange" max="60000" min="10000" step="5000" type="range" value="30000"/>
+                  <!-- Quick budget pills -->
+                  <div class="flex flex-wrap gap-1.5 mt-1">
+                    <button class="budget-pill font-label-sm text-label-sm px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors" data-budget="15000" type="button">&lt; Rp 15.000</button>
+                    <button class="budget-pill font-label-sm text-label-sm px-2.5 py-1 rounded-md bg-primary text-on-primary font-semibold transition-colors" data-budget="30000" type="button">Rp 15k - 30k</button>
+                    <button class="budget-pill font-label-sm text-label-sm px-2.5 py-1 rounded-md bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors" data-budget="50000" type="button">Rp 30k - 50k</button>
+                  </div>
+                </div>
+                <!-- FILTER SECTION 2: Category Selector -->
+                <div class="flex flex-col gap-space-xs pt-space-xs">
+                  <span class="font-label-md text-label-md text-text-primary font-semibold">Kategori Makanan</span>
+                  <div class="flex flex-col gap-1.5">
+                    <label class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+                      <span class="flex items-center gap-2 font-body-sm text-body-sm text-text-primary font-medium">
+                        <span class="material-symbols-outlined text-[18px] text-primary">lunch_dining</span>
+                        Semua Kategori
+                      </span>
+                      <input checked="" class="accent-primary w-4 h-4" name="category_filter" type="radio"/>
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors">
+                      <span class="flex items-center gap-2 font-body-sm text-body-sm text-text-primary">
+                        <span class="material-symbols-outlined text-[18px] text-text-muted">dinner_dining</span>
+                        Makanan Berat
+                      </span>
+                      <input class="accent-primary w-4 h-4" name="category_filter" type="radio"/>
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors">
+                      <span class="flex items-center gap-2 font-body-sm text-body-sm text-text-primary">
+                        <span class="material-symbols-outlined text-[18px] text-text-muted">bakery_dining</span>
+                        Bakery &amp; Pastry
+                      </span>
+                      <input class="accent-primary w-4 h-4" name="category_filter" type="radio"/>
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors">
+                      <span class="flex items-center gap-2 font-body-sm text-body-sm text-text-primary">
+                        <span class="material-symbols-outlined text-[18px] text-text-muted">local_cafe</span>
+                        Minuman &amp; Dessert
+                      </span>
+                      <input class="accent-primary w-4 h-4" name="category_filter" type="radio"/>
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors">
+                      <span class="flex items-center gap-2 font-body-sm text-body-sm text-text-primary">
+                        <span class="material-symbols-outlined text-[18px] text-text-muted">nutrition</span>
+                        Paket Sayur &amp; Buah
+                      </span>
+                      <input class="accent-primary w-4 h-4" name="category_filter" type="radio"/>
+                    </label>
+                  </div>
+                </div>
+                <!-- FILTER SECTION 3: Dietary & Allergy Transparency -->
+                <div class="flex flex-col gap-space-xs pt-space-xs">
+                  <div class="flex items-center justify-between">
+                    <span class="font-label-md text-label-md text-text-primary font-semibold">Diet &amp; Alergen Transparan</span>
+                    <span class="material-symbols-outlined text-[16px] text-text-muted cursor-help" title="Informasi langsung diverifikasi dari standar merchant">help</span>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <label class="flex items-center gap-2.5 cursor-pointer">
+                      <input checked="" class="accent-primary w-4 h-4 rounded" type="checkbox"/>
+                      <span class="font-body-sm text-body-sm text-text-primary flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-discount-green"></span>
+                        Halal Terverifikasi
+                      </span>
+                    </label>
+                    <label class="flex items-center gap-2.5 cursor-pointer">
+                      <input checked="" class="accent-primary w-4 h-4 rounded" type="checkbox"/>
+                      <span class="font-body-sm text-body-sm text-text-primary">Bebas Kacang (Nut-Free)</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 cursor-pointer">
+                      <input class="accent-primary w-4 h-4 rounded" type="checkbox"/>
+                      <span class="font-body-sm text-body-sm text-text-primary">Bebas Gluten</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 cursor-pointer">
+                      <input class="accent-primary w-4 h-4 rounded" type="checkbox"/>
+                      <span class="font-body-sm text-body-sm text-text-primary">Vegetarian Ramah</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 cursor-pointer">
+                      <input class="accent-primary w-4 h-4 rounded" type="checkbox"/>
+                      <span class="font-body-sm text-body-sm text-text-primary">Bebas Dairy (Lactose Free)</span>
+                    </label>
+                  </div>
+                </div>
+                <!-- FILTER SECTION 4: Pickup Window -->
+                <div class="flex flex-col gap-space-xs pt-space-xs">
+                  <span class="font-label-md text-label-md text-text-primary font-semibold">Waktu Jemput (Pickup Window)</span>
+                  <div class="grid grid-cols-1 gap-1.5">
+                    <button class="w-full text-left px-3 py-2 rounded-lg bg-surface-container-high/60 text-primary font-label-md text-label-md font-semibold flex items-center justify-between" type="button">
+                      <span class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px] text-discount-orange animate-pulse">timer</span>
+                        Segera Habis (&lt; 2 Jam)
+                      </span>
+                      <span class="material-symbols-outlined text-[16px]">check</span>
+                    </button>
+                    <button class="w-full text-left px-3 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md transition-colors flex items-center justify-between" type="button">
+                      <span>Sore (17:00 - 19:00)</span>
+                      <span class="text-text-muted font-body-sm text-body-sm">18 promo</span>
+                    </button>
+                    <button class="w-full text-left px-3 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md transition-colors flex items-center justify-between" type="button">
+                      <span>Malam (19:00 - 21:30)</span>
+                      <span class="text-text-muted font-body-sm text-body-sm">42 promo</span>
+                    </button>
+                  </div>
+                </div>
+                <!-- FILTER SECTION 5: Radius Distance -->
+                <div class="flex flex-col gap-space-xs pt-space-xs">
+                  <span class="font-label-md text-label-md text-text-primary font-semibold">Jarak Penjemputan</span>
+                  <div class="grid grid-cols-3 gap-1.5 text-center">
+                    <button class="py-1.5 px-2 rounded-lg bg-surface-container hover:bg-surface-container-high font-label-sm text-label-sm text-text-primary font-medium transition-colors" type="button">
+                      &lt; 1 km
+                    </button>
+                    <button class="py-1.5 px-2 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-bold transition-colors" type="button">
+                      &lt; 3 km
+                    </button>
+                    <button class="py-1.5 px-2 rounded-lg bg-surface-container hover:bg-surface-container-high font-label-sm text-label-sm text-text-primary font-medium transition-colors" type="button">
+                      &lt; 5 km
+                    </button>
+                  </div>
+                </div>
+                <!-- Sidebar Bottom Card: Random Pick Quick Trigger -->
+                <div class="mt-space-xs p-space-sm rounded-xl bg-tertiary-fixed/60 flex flex-col gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">casino</span>
+                    <span class="font-title-sm text-title-sm text-tertiary-container font-bold leading-tight">Bingung Pilih Menu?</span>
+                  </div>
+                  <p class="font-body-sm text-body-sm text-tertiary">
+                    Pakai Random Pick! Kami carikan menu surplus mantap sesuai budget Anda.
+                  </p>
+                  <a class="inline-flex items-center justify-center gap-1.5 w-full bg-primary text-on-primary py-2 px-3 rounded-lg font-label-md text-label-md font-bold shadow-sm hover:bg-primary-container transition-all" data-path="random-pick" href="random-pick.html">
+                    <span>Pilihin Menu Hemat</span>
+                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  </a>
+                </div>
+              </div>
+            </aside>
+            <!-- ======================================================== -->
+            <!-- RIGHT MAIN FEED: Categories, Flash Rescue, and Products (9 cols) -->
+            <!-- ======================================================== -->
+            <main class="lg:col-span-9 flex flex-col gap-space-lg">
+              <!-- 1. Interactive Top Controls: Quick Horizontal Filter & Sort -->
+              <div class="bg-surface-card rounded-2xl p-space-sm shadow-sm flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+                <!-- Category Chips Horizontal Scroll -->
+                <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-none">
+                  <button class="px-3.5 py-1.5 rounded-full bg-primary text-on-primary font-label-md text-label-md font-semibold whitespace-nowrap shrink-0 shadow-sm" type="button">
+                    Semua (48)
+                  </button>
+                  <button class="px-3.5 py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap shrink-0 transition-colors" type="button">
+                    🥐 Pastry &amp; Bakery (14)
+                  </button>
+                  <button class="px-3.5 py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap shrink-0 transition-colors" type="button">
+                    🍱 Nasi &amp; Bento (19)
+                  </button>
+                  <button class="px-3.5 py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap shrink-0 transition-colors" type="button">
+                    🥗 Salad Sehat (7)
+                  </button>
+                  <button class="px-3.5 py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap shrink-0 transition-colors" type="button">
+                    ☕ Kopi &amp; Teh (8)
+                  </button>
+                </div>
+                <!-- Sorting Dropdown -->
+                <div class="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                  <span class="font-body-sm text-body-sm text-text-muted hidden md:inline">Urutkan:</span>
+                  <div class="relative inline-block">
+                    <select class="appearance-none bg-surface-container-low text-text-primary font-label-md text-label-md pl-3 pr-8 py-2 rounded-xl focus:outline-none focus:bg-surface-container cursor-pointer">
+                      <option value="terdekat">Paling Dekat (0.8 km)</option>
+                      <option value="diskon">Diskon Terbesar (65%+)</option>
+                      <option value="murah">Harga Terendah (Mulai Rp 12k)</option>
+                      <option value="segera">Segera Berakhir (&lt; 1 Jam)</option>
+                    </select>
+                    <span class="material-symbols-outlined text-[18px] text-text-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">expand_more</span>
+                  </div>
+                </div>
+              </div>
+              <!-- 2. Section: Flash Rescue with Live Ticking Timer -->
+              <section class="flex flex-col gap-space-sm bg-gradient-to-r from-surface-card to-surface-container-low p-space-md rounded-2xl shadow-sm">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-discount-orange animate-ping"></span>
+                    <h2 class="font-headline-sm text-headline-sm text-text-primary font-bold">
+                      Flash Rescue: Segera Habis Malam Ini ⏰
+                    </h2>
+                  </div>
+                  <!-- Live Countdown Badge -->
+                  <div class="flex items-center gap-1.5 bg-surface-card px-3 py-1 rounded-xl shadow-xs">
+                    <span class="font-label-sm text-label-sm text-text-muted uppercase">Tersisa:</span>
+                    <div class="flex items-center gap-1 font-title-sm text-title-sm text-discount-orange font-mono font-bold">
+                      <span class="bg-surface-container px-1.5 py-0.5 rounded" id="timerHours">01</span>
+                      <span>:</span>
+                      <span class="bg-surface-container px-1.5 py-0.5 rounded" id="timerMins">44</span>
+                      <span>:</span>
+                      <span class="bg-surface-container px-1.5 py-0.5 rounded" id="timerSecs">28</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Flash Banner Quick Strip -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm mt-1">
+                  <!-- Mini Alert 1 -->
+                  <div class="bg-surface-card p-space-sm rounded-xl flex items-center justify-between gap-space-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center gap-space-sm">
+                      <div class="w-14 h-14 rounded-lg bg-surface-container overflow-hidden shrink-0">
+                        <img class="w-full h-full object-cover" data-alt="Golden crisp freshly baked French butter croissants stacked in a warm wicker basket on a clean white marble countertop, high detail, warm cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARwqZEwXYHVFdl3xeDPq-JX7IZY83GxvV70H6sW8cmrKeJKXg06Gx7_YiBwDivx9brMOOzv76S_oDZXQQwgBxAe8baJ6qCPj8RvpQgiTh5iWFFHXntbZLT7b7IQbD2Ppn_OJDMRYDgSnKu8beMbeINFGTPsmofaYtlwdDHPIIT1x-hkT531HeM0zly-xnFw82nEiz_Er64TGdXYAkocl9ynMqhMxri3JjAbOTNMQ"/>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="font-label-sm text-label-sm text-discount-orange font-bold uppercase tracking-wider">Tersisa 1 Box Terakhir</span>
+                        <span class="font-title-sm text-title-sm text-text-primary font-bold truncate max-w-[180px]">Surprise Croissant Delight</span>
+                        <span class="font-body-sm text-body-sm text-text-muted">Bonjour Bakery • 0.8 km</span>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-end">
+                      <span class="font-label-sm text-label-sm line-through text-text-muted">Rp 45.000</span>
+                      <span class="font-title-sm text-title-sm text-primary font-black">Rp 18.000</span>
+                      <button class="mt-1 bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm px-3 py-1 rounded-lg font-bold transition-colors" type="button">
+                        Klaim
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Mini Alert 2 -->
+                  <div class="bg-surface-card p-space-sm rounded-xl flex items-center justify-between gap-space-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center gap-space-sm">
+                      <div class="w-14 h-14 rounded-lg bg-surface-container overflow-hidden shrink-0">
+                        <img class="w-full h-full object-cover" data-alt="Savory authentic Japanese Beef Teriyaki donburi rice bowl with scallions and sesame seeds, rich depth of field, natural food photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQDd3muBmKLU6XGbXEl_UzjwsZuhh66BlyVdAZAwysrUPbsjn0oIDaCs4zoSXt3EiZrw5bjUSa-3N33tUQKBIM4qQoA-2vgNYHyUszRhStSQByq9pgKcPybKWFEk9NSwCg1Zo-Tynj6HFqqSH9_7F1CGguR1hMP5fB0srK5DDKeeR8YIiPr7ja6fLiLdDOMbQYGISXlVxZBsCrggzL-R2gDPCES1e3vh2p3mX-MA"/>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="font-label-sm text-label-sm text-discount-orange font-bold uppercase tracking-wider">Pickup s/d 21:00</span>
+                        <span class="font-title-sm text-title-sm text-text-primary font-bold truncate max-w-[180px]">Tokyo Donburi Box</span>
+                        <span class="font-body-sm text-body-sm text-text-muted">Tokyo Bites • 1.2 km</span>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-end">
+                      <span class="font-label-sm text-label-sm line-through text-text-muted">Rp 55.000</span>
+                      <span class="font-title-sm text-title-sm text-primary font-black">Rp 22.000</span>
+                      <button class="mt-1 bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm px-3 py-1 rounded-lg font-bold transition-colors" type="button">
+                        Klaim
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <!-- 3. MAIN PRODUCT GRID (3-Columns Responsive) -->
+              <section class="flex flex-col gap-space-md">
+                <div class="flex items-center justify-between">
+                  <h2 class="font-headline-sm text-headline-sm text-text-primary font-bold">
+                    Katalog Surplus Siap Ambil
+                  </h2>
+                  <span class="font-body-sm text-body-sm text-text-muted">Menampilkan 6 dari 48 menu diselamatkan</span>
+                </div>
+                <!-- The 6 Specified Marketplace Food Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter-md">
+                  <!-- ================= CARD 1: Bonjour Bakery ================= -->
+                  <article class="bg-surface-card rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+                    <!-- Food Image with Badges -->
+                    <div class="relative w-full h-48 bg-surface-container overflow-hidden">
+                      <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Artisan butter croissants and chocolate pain au chocolat pastry fresh out of the oven, dusting of powdered sugar, appetizing bakery atmosphere, soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABTdBSY307tpnYapjlwd4TWwNNZXN2eblvK1MjUJpoDcKnIEZ5TXDmdQReihjY1I1f0TQuUozXxBWZ3SPfUnwk2BxdErNUbs50RvgYiYUGk0Xj7eWn5EnkTLPo2M_2lj5JiSYdfumxutItrQfzYY5l6cFZ3NCpCu0riIytukevPe-wJh0QG8xme-SZeWInt29NMZv-FmXqOwtBU2lIFVH6BxZcX1RFSnK5Fvo5RA"/>
+                      <!-- Discount Badge Top Left -->
+                      <div class="absolute top-3 left-3 bg-discount-orange text-white font-label-md text-label-md font-extrabold px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1">
+                        <span>-60%</span>
+                      </div>
+                      <!-- Bookmark Button Top Right -->
+                      <!-- Remaining Portions Warning Pill -->
+                      <div class="absolute bottom-3 left-3 bg-surface-card/95 backdrop-blur-sm text-discount-orange font-label-sm text-label-sm font-bold px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-discount-orange"></span>
+                        Sisa 3 Porsi
+                      </div>
+                    </div>
+                    <!-- Card Body Content -->
+                    <div class="p-space-md flex-1 flex flex-col justify-between gap-space-sm">
+                      <div>
+                        <div class="flex items-center justify-between text-text-muted mb-1">
+                          <span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider">Bonjour Bakery</span>
+                          <span class="font-body-sm text-body-sm flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-[14px] text-tertiary">star</span> 4.9 (120+)
+                          </span>
+                        </div>
+                        <h3 class="font-title-sm text-title-sm text-text-primary font-bold line-clamp-1 group-hover:text-primary transition-colors">
+                          Artisan Pastry &amp; Croissant Pack
+                        </h3>
+                        <p class="font-body-sm text-body-sm text-text-muted line-clamp-1 mt-0.5">
+                          Paket 2 pcs Croissant mentega dan Pain au Chocolat renyah.
+                        </p>
+                      </div>
+                      <!-- Dietary Badges Row -->
+                      <div class="flex flex-wrap gap-1">
+                        <span class="bg-surface-container-low text-primary font-label-sm text-label-sm px-2 py-0.5 rounded-md font-semibold">
+                          ✓ Halal
+                        </span>
+                        <span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded-md">
+                          Bebas Kacang
+                        </span>
+                      </div>
+                      <!-- Pickup Time Tag -->
+                      <div class="bg-surface-container-low/70 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-on-surface-variant">
+                        <div class="flex items-center gap-1 font-body-sm text-body-sm">
+                          <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                          <span>Jemput: <strong>19:30 - 21:00</strong></span>
+                        </div>
+                        <span class="font-body-sm text-body-sm text-text-muted">0.8 km</span>
+                      </div>
+                      <!-- Pricing & Action Row -->
+                      <div class="flex items-center justify-between pt-space-xs">
+                        <div class="flex flex-col">
+                          <span class="font-label-sm text-label-sm text-text-muted line-through">Rp 45.000</span>
+                          <span class="font-title-md text-title-md text-primary font-extrabold tracking-tight">Rp 18.000</span>
+                        </div>
+                        <button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-bold px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1" type="button">
+                          <span>Selamatkan</span>
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                  <!-- ================= CARD 2: Tokyo Bites Kemanggisan ================= -->
+                  <article class="bg-surface-card rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="relative w-full h-48 bg-surface-container overflow-hidden">
+                      <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Japanese beef gyudon donburi bowl topped with tender simmered beef slices, sweet caramelized onions, and a soft spring onion garnish on warm rice, appetizing studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKf7Lj1Uh_dnii5sFH0j0zrT_sPgytdYgF2uT3HSgvMm_5FXwsFJdnwe_t0LJvLiG5Ipq04JrNf91C9kqqVWwdM_ax_rzv1nv79ulAad2OWQ5GpKIKXBwj84Bc-FnOzAZSZ7e6m9PtjYmL-JCl1T88W9D42Ez7ZL-wVx_wOMXATMkYT38CjTsFCnifermjYlPOI_xItczYLHu-1yNpstpcEYG1WYKirQg0E-NLdA"/>
+                      <div class="absolute top-3 left-3 bg-discount-orange text-white font-label-md text-label-md font-extrabold px-2.5 py-1 rounded-lg shadow-sm">
+                        -60%
+                      </div>
+                      <div class="absolute bottom-3 left-3 bg-surface-card/95 backdrop-blur-sm text-discount-orange font-label-sm text-label-sm font-bold px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-discount-orange"></span>
+                        Sisa 4 Porsi
+                      </div>
+                    </div>
+                    <div class="p-space-md flex-1 flex flex-col justify-between gap-space-sm">
+                      <div>
+                        <div class="flex items-center justify-between text-text-muted mb-1">
+                          <span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider">Tokyo Bites Kemanggisan</span>
+                          <span class="font-body-sm text-body-sm flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-[14px] text-tertiary">star</span> 4.8 (85)
+                          </span>
+                        </div>
+                        <h3 class="font-title-sm text-title-sm text-text-primary font-bold line-clamp-1 group-hover:text-primary transition-colors">
+                          Japanese Beef Donburi Bento
+                        </h3>
+                        <p class="font-body-sm text-body-sm text-text-muted line-clamp-1 mt-0.5">
+                          Daging sapi saus teriyaki gurih, telur tamago, dan nasi pulen.
+                        </p>
+                      </div>
+                      <div class="flex flex-wrap gap-1">
+                        <span class="bg-surface-container-low text-primary font-label-sm text-label-sm px-2 py-0.5 rounded-md font-semibold">
+                          ✓ Halal MUI
+                        </span>
+                        <span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded-md">
+                          Hangat Higienis
+                        </span>
+                      </div>
+                      <div class="bg-surface-container-low/70 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-on-surface-variant">
+                        <div class="flex items-center gap-1 font-body-sm text-body-sm">
+                          <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                          <span>Jemput: <strong>20:00 - 21:45</strong></span>
+                        </div>
+                        <span class="font-body-sm text-body-sm text-text-muted">1.2 km</span>
+                      </div>
+                      <div class="flex items-center justify-between pt-space-xs">
+                        <div class="flex flex-col">
+                          <span class="font-label-sm text-label-sm text-text-muted line-through">Rp 55.000</span>
+                          <span class="font-title-md text-title-md text-primary font-extrabold tracking-tight">Rp 22.000</span>
+                        </div>
+                        <button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-bold px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1" type="button">
+                          <span>Selamatkan</span>
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                  <!-- ================= CARD 3: Sweet Loop Donuts ================= -->
+                  <article class="bg-surface-card rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="relative w-full h-48 bg-surface-container overflow-hidden">
+                      <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Assortment of gourmet glazed artisan donuts and flaky danish pastries inside an open eco-friendly craft paper bakery box, colorful sprinkles, warm clean aesthetics" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwMvouHEBFCfsxElijj1voIqO3oyGxZDI97yIS_WseL9RE89fraPDBJX_G_xaCObSPRhYNLXUngPKUBCQmxUzumcofZSSdAxC3SZT4cvL2ZPCtMRJKN-STCERycbu8Qd-AJYI8lZtM4jnX2s8EKJxb7Xyj1P3i_sRIOrYwj0QGhIpO0dTZHbsrEeUCiDOzQD6z4EoD7ukTSc-NLIo2BhipzZUw2lopqvehwWBNcQ"/>
+                      <div class="absolute top-3 left-3 bg-discount-orange text-white font-label-md text-label-md font-extrabold px-2.5 py-1 rounded-lg shadow-sm">
+                        -60%
+                      </div>
+                      <div class="absolute bottom-3 left-3 bg-surface-card/95 backdrop-blur-sm text-primary font-label-sm text-label-sm font-bold px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                        Sisa 5 Box
+                      </div>
+                    </div>
+                    <div class="p-space-md flex-1 flex flex-col justify-between gap-space-sm">
+                      <div>
+                        <div class="flex items-center justify-between text-text-muted mb-1">
+                          <span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider">Sweet Loop Donuts</span>
+                          <span class="font-body-sm text-body-sm flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-[14px] text-tertiary">star</span> 4.7 (210)
+                          </span>
+                        </div>
+                        <h3 class="font-title-sm text-title-sm text-text-primary font-bold line-clamp-1 group-hover:text-primary transition-colors">
+                          Assorted Donut &amp; Danish Box
+                        </h3>
+                        <p class="font-body-sm text-body-sm text-text-muted line-clamp-1 mt-0.5">
+                          Kotak isi 4 donut kentang artisan aneka glazing + Danish buah.
+                        </p>
+                      </div>
+                      <div class="flex flex-wrap gap-1">
+                        <span class="bg-surface-container-low text-primary font-label-sm text-label-sm px-2 py-0.5 rounded-md font-semibold">
+                          ✓ Halal
+                        </span>
+                        <span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded-md">
+                          Vegetarian
+                        </span>
+                      </div>
+                      <div class="bg-surface-container-low/70 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-on-surface-variant">
+                        <div class="flex items-center gap-1 font-body-sm text-body-sm">
+                          <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                          <span>Jemput: <strong>18:30 - 20:30</strong></span>
+                        </div>
+                        <span class="font-body-sm text-body-sm text-text-muted">1.5 km</span>
+                      </div>
+                      <div class="flex items-center justify-between pt-space-xs">
+                        <div class="flex flex-col">
+                          <span class="font-label-sm text-label-sm text-text-muted line-through">Rp 48.000</span>
+                          <span class="font-title-md text-title-md text-primary font-extrabold tracking-tight">Rp 19.000</span>
+                        </div>
+                        <button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-bold px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1" type="button">
+                          <span>Selamatkan</span>
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                  <!-- ================= CARD 4: Green Harvest ================= -->
+                  <article class="bg-surface-card rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="relative w-full h-48 bg-surface-container overflow-hidden">
+                      <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Vibrant healthy mixed organic greens salad bowl with avocado, cherry tomatoes, quinoa, paired with a fresh cold-pressed orange-carrot juice bottle, bright natural daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3rv9YSh15qKaG65PJORtjFcR0DnSjZCiVpibsTyaPdjVoLlCvYNIVpqKu-3KMPwDzd4vg9clIVOHPeVIZIbLpP8cH6ThQQf_5A8VBShT-4VsbRLbPX48DNrT_qrEZctJ7wuYrYAJoTvOwqCKTJ6-fP6cHAFZTO79wm7CAsip5mIapr2IkYtStH4FG_ZmbLinCNtw9SKeNJGgi8IF7Dpro9kDrKip8BmSX-Bjokw"/>
+                      <div class="absolute top-3 left-3 bg-discount-green text-white font-label-md text-label-md font-extrabold px-2.5 py-1 rounded-lg shadow-sm">
+                        -57%
+                      </div>
+                      <div class="absolute bottom-3 left-3 bg-surface-card/95 backdrop-blur-sm text-discount-orange font-label-sm text-label-sm font-bold px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-discount-orange"></span>
+                        Sisa 2 Paket
+                      </div>
+                    </div>
+                    <div class="p-space-md flex-1 flex flex-col justify-between gap-space-sm">
+                      <div>
+                        <div class="flex items-center justify-between text-text-muted mb-1">
+                          <span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider">Green Harvest</span>
+                          <span class="font-body-sm text-body-sm flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-[14px] text-tertiary">star</span> 4.9 (94)
+                          </span>
+                        </div>
+                        <h3 class="font-title-sm text-title-sm text-text-primary font-bold line-clamp-1 group-hover:text-primary transition-colors">
+                          Fresh Salad Bowl &amp; Cold Pressed Juice
+                        </h3>
+                        <p class="font-body-sm text-body-sm text-text-muted line-clamp-1 mt-0.5">
+                          Salad bowl segar dressing roasted sesame + jus jeruk peras dingin.
+                        </p>
+                      </div>
+                      <div class="flex flex-wrap gap-1">
+                        <span class="bg-discount-green/10 text-discount-green font-label-sm text-label-sm px-2 py-0.5 rounded-md font-semibold">
+                          🌱 Vegetarian
+                        </span>
+                        <span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded-md">
+                          Bebas Gluten
+                        </span>
+                      </div>
+                      <div class="bg-surface-container-low/70 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-on-surface-variant">
+                        <div class="flex items-center gap-1 font-body-sm text-body-sm">
+                          <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                          <span>Jemput: <strong>17:30 - 19:30</strong></span>
+                        </div>
+                        <span class="font-body-sm text-body-sm text-text-muted">2.1 km</span>
+                      </div>
+                      <div class="flex items-center justify-between pt-space-xs">
+                        <div class="flex flex-col">
+                          <span class="font-label-sm text-label-sm text-text-muted line-through">Rp 42.000</span>
+                          <span class="font-title-md text-title-md text-primary font-extrabold tracking-tight">Rp 18.000</span>
+                        </div>
+                        <button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-bold px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1" type="button">
+                          <span>Selamatkan</span>
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                  <!-- ================= CARD 5: Warung Nusantara ================= -->
+                  <article class="bg-surface-card rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="relative w-full h-48 bg-surface-container overflow-hidden">
+                      <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Indonesian crispy fried smashed chicken Ayam Geprek topped with spicy red sambal korek, served with steamed white rice, sliced cucumbers, and fried tofu on banana leaf plate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMOXVI1OM8Px0RlTdtJ6B49Z8Z1KwDOrOMHSHluG_2JjSajRRQjj1t7wXp8plKS9IgSNs82WYAiuWDvXq7bSEP4KcQmEdsflkTgsQAYr36pNzRBCPlId5YWcBzJ8JWY7cdPy7XxkBM-jzLKGKS_FqM5uTpABkyYF08V8nKY6vIlLot0RmOTFOGRYlWVCh7YJQzek5S6dTpjd3UvHgTO0183nidlxLHmigTxwd15w"/>
+                      <div class="absolute top-3 left-3 bg-discount-orange text-white font-label-md text-label-md font-extrabold px-2.5 py-1 rounded-lg shadow-sm">
+                        -55%
+                      </div>
+                      <div class="absolute bottom-3 left-3 bg-surface-card/95 backdrop-blur-sm text-discount-orange font-label-sm text-label-sm font-bold px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-discount-orange"></span>
+                        Sisa 3 Porsi
+                      </div>
+                    </div>
+                    <div class="p-space-md flex-1 flex flex-col justify-between gap-space-sm">
+                      <div>
+                        <div class="flex items-center justify-between text-text-muted mb-1">
+                          <span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider">Warung Nusantara</span>
+                          <span class="font-body-sm text-body-sm flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-[14px] text-tertiary">star</span> 4.8 (340)
+                          </span>
+                        </div>
+                        <h3 class="font-title-sm text-title-sm text-text-primary font-bold line-clamp-1 group-hover:text-primary transition-colors">
+                          Ayam Geprek Sambal Korek Komplit
+                        </h3>
+                        <p class="font-body-sm text-body-sm text-text-muted line-clamp-1 mt-0.5">
+                          Ayam goreng krispi sambal pedas nampol, nasi putih, tahu, timun.
+                        </p>
+                      </div>
+                      <div class="flex flex-wrap gap-1">
+                        <span class="bg-surface-container-low text-primary font-label-sm text-label-sm px-2 py-0.5 rounded-md font-semibold">
+                          ✓ Halal Terverifikasi
+                        </span>
+                        <span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded-md">
+                          Pedas Mantap
+                        </span>
+                      </div>
+                      <div class="bg-surface-container-low/70 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-on-surface-variant">
+                        <div class="flex items-center gap-1 font-body-sm text-body-sm">
+                          <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                          <span>Jemput: <strong>20:15 - 22:00</strong></span>
+                        </div>
+                        <span class="font-body-sm text-body-sm text-text-muted">0.5 km</span>
+                      </div>
+                      <div class="flex items-center justify-between pt-space-xs">
+                        <div class="flex flex-col">
+                          <span class="font-label-sm text-label-sm text-text-muted line-through">Rp 33.000</span>
+                          <span class="font-title-md text-title-md text-primary font-extrabold tracking-tight">Rp 15.000</span>
+                        </div>
+                        <button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-bold px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1" type="button">
+                          <span>Selamatkan</span>
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                  <!-- ================= CARD 6: Daily Bread Kemanggisan ================= -->
+                  <article class="bg-surface-card rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+                    <div class="relative w-full h-48 bg-surface-container overflow-hidden">
+                      <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Deluxe gourmet roast beef and cheese sub sandwich on a toasted golden brioche bun, fresh crisp lettuce and gourmet spread, artisan café food photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArjO8lAOWTNZ2q519gmB1Dh6t1hff4OoP0MC_tIE0ecZEE1rBd3tdwRYZ_w5vyqtflCv8OtJfk9mzvnHM7utBdpXfEvpwwUVxZFaNjghGyp52-yPx_Rh3fY7zzygQtjI6vte4k-ddSDLLQqbTkToUHbpPRcvdgjLhnCgCnAPzjUAm2H13ok7AW0iwmcSXj3WSnfkLXDEWEbZ0zvqtut1UJrzGKu7dkWZWPxVSUMA"/>
+                      <div class="absolute top-3 left-3 bg-discount-orange text-white font-label-md text-label-md font-extrabold px-2.5 py-1 rounded-lg shadow-sm">
+                        -65%
+                      </div>
+                      <div class="absolute bottom-3 left-3 bg-surface-card/95 backdrop-blur-sm text-discount-orange font-label-sm text-label-sm font-bold px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-discount-orange"></span>
+                        Sisa 2 Porsi
+                      </div>
+                    </div>
+                    <div class="p-space-md flex-1 flex flex-col justify-between gap-space-sm">
+                      <div>
+                        <div class="flex items-center justify-between text-text-muted mb-1">
+                          <span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider">Daily Bread Kemanggisan</span>
+                          <span class="font-body-sm text-body-sm flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-[14px] text-tertiary">star</span> 4.9 (180)
+                          </span>
+                        </div>
+                        <h3 class="font-title-sm text-title-sm text-text-primary font-bold line-clamp-1 group-hover:text-primary transition-colors">
+                          Gourmet Sandwich &amp; Brioche Roll
+                        </h3>
+                        <p class="font-body-sm text-body-sm text-text-muted line-clamp-1 mt-0.5">
+                          Sandwich smoked beef keju cheddar panggang dalam roti brioche lembut.
+                        </p>
+                      </div>
+                      <div class="flex flex-wrap gap-1">
+                        <span class="bg-surface-container-low text-primary font-label-sm text-label-sm px-2 py-0.5 rounded-md font-semibold">
+                          ✓ Halal
+                        </span>
+                        <span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded-md">
+                          Bebas Kacang
+                        </span>
+                      </div>
+                      <div class="bg-surface-container-low/70 px-2.5 py-1.5 rounded-lg flex items-center justify-between text-on-surface-variant">
+                        <div class="flex items-center gap-1 font-body-sm text-body-sm">
+                          <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+                          <span>Jemput: <strong>19:00 - 21:00</strong></span>
+                        </div>
+                        <span class="font-body-sm text-body-sm text-text-muted">1.1 km</span>
+                      </div>
+                      <div class="flex items-center justify-between pt-space-xs">
+                        <div class="flex flex-col">
+                          <span class="font-label-sm text-label-sm text-text-muted line-through">Rp 50.000</span>
+                          <span class="font-title-md text-title-md text-primary font-extrabold tracking-tight">Rp 17.500</span>
+                        </div>
+                        <button class="bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-bold px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1" type="button">
+                          <span>Selamatkan</span>
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+                <!-- Bottom Pagination / Load More Bar -->
+                <div class="mt-space-md p-space-md bg-surface-card rounded-2xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+                  <span class="font-body-sm text-body-sm text-text-muted">
+                    Menampilkan <span class="font-bold text-text-primary">6</span> dari <span class="font-bold text-text-primary">48</span> penawaran surplus terdekat
+                  </span>
+                  <div class="flex items-center gap-2">
+                    <button class="px-4 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high font-label-md text-label-md text-on-surface-variant font-semibold transition-colors disabled:opacity-50" disabled="" type="button">
+                      Sebelumnya
+                    </button>
+                    <div class="flex items-center gap-1">
+                      <button class="w-9 h-9 rounded-xl bg-primary text-on-primary font-label-md text-label-md font-bold" type="button">1</button>
+                      <button class="w-9 h-9 rounded-xl hover:bg-surface-container text-on-surface-variant font-label-md text-label-md font-medium transition-colors" type="button">2</button>
+                      <button class="w-9 h-9 rounded-xl hover:bg-surface-container text-on-surface-variant font-label-md text-label-md font-medium transition-colors" type="button">3</button>
+                      <span class="px-1 text-text-muted font-label-md text-label-md">...</span>
+                      <button class="w-9 h-9 rounded-xl hover:bg-surface-container text-on-surface-variant font-label-md text-label-md font-medium transition-colors" type="button">8</button>
+                    </div>
+                    <button class="px-4 py-2 rounded-xl bg-primary-fixed hover:bg-primary-container hover:text-on-primary font-label-md text-label-md text-primary font-bold transition-colors" type="button">
+                      Selanjutnya
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      </div>
+      <script>
+  // Flash Rescue Countdown Timer Simulation
+  let remainingSeconds = 1 * 3600 + 44 * 60 + 28;
+  const hoursEl = document.getElementById('timerHours');
+  const minsEl = document.getElementById('timerMins');
+  const secsEl = document.getElementById('timerSecs');
+
+  setInterval(() => {
+    if (remainingSeconds > 0) {
+      remainingSeconds--;
+      const hrs = Math.floor(remainingSeconds / 3600);
+      const mins = Math.floor((remainingSeconds % 3600) / 60);
+      const secs = remainingSeconds % 60;
+      if (hoursEl) hoursEl.textContent = String(hrs).padStart(2, '0');
+      if (minsEl) minsEl.textContent = String(mins).padStart(2, '0');
+      if (secsEl) secsEl.textContent = String(secs).padStart(2, '0');
+    }
+  }, 1000);
+</script></main><footer class="w-full bg-surface-card border-t border-border-subtle mt-space-xl"><div class="max-w-7xl mx-auto px-margin-lg py-space-xl"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-gutter-lg pb-space-lg"><div class="lg:col-span-2 flex flex-col gap-space-sm pr-space-md"><span class="font-headline-sm text-headline-sm font-bold text-primary">Unwaste</span><p class="font-body-md text-body-md text-text-muted">Gerakan menyelamatkan makanan berlebih berkualitas prima dari restoran, kafe, dan toko roti lokal dengan harga terjangkau. Menjaga dompet tetap aman, bumi tetap lestari.</p><div class="flex items-center gap-space-sm mt-space-xs"><div class="flex items-center gap-1.5 bg-surface-container-low px-space-sm py-1.5 rounded-xl"><span class="material-symbols-outlined text-discount-green text-[20px]">eco</span><span class="font-label-md text-label-md text-on-surface font-semibold">148,200+ Porsi Diselamatkan</span></div></div></div><div class="flex flex-col gap-space-xs"><span class="font-title-sm text-title-sm text-on-surface font-bold mb-1">Jelajah Makanan</span><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" data-path="jelajah" href="index.html">Surplus Roti &amp; Bakery</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" data-path="surprise-box" href="surprise-box.html">Surprise Box Resto</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" data-path="jelajah" href="index.html">Katering Harian</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" data-path="random-pick" href="random-pick.html">Pilihin Makanan Hemat</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" data-path="jelajah" href="index.html">Promo Kilat Malam</a></div><div class="flex flex-col gap-space-xs"><span class="font-title-sm text-title-sm text-on-surface font-bold mb-1">Untuk Mitra</span><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="login.html?tab=toko">Portal Merchant</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Panduan Standar Pangan</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Kalkulator Pengurangan Limbah</a></div><div class="flex flex-col gap-space-xs"><span class="font-title-sm text-title-sm text-on-surface font-bold mb-1">Dukungan &amp; Legal</span><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Pusat Bantuan (FAQ)</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Kebijakan Keamanan Makanan</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Syarat &amp; Ketentuan</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Kebijakan Privasi</a><a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors" href="#">Kontak Komunitas</a></div></div><div class="pt-space-md border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-space-sm"><span class="font-body-sm text-body-sm text-text-muted">© 2025 Unwaste Indonesia. Seluruh hak cipta dilindungi.</span><div class="flex items-center gap-space-md"><span class="font-body-sm text-body-sm text-text-muted flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-discount-green">verified</span>Terverifikasi Halal &amp; Higienis</span></div></div></div></footer><style>@media(max-width:1279px){body{padding-bottom:76px}}</style><nav aria-label="Menu utama" class="xl:hidden fixed bottom-0 inset-x-0 z-40 bg-surface-card border-t border-border-subtle flex justify-around py-1.5"><a href="index.html" data-bn class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg font-label-sm text-label-sm text-text-muted"><span class="material-symbols-outlined text-[22px]">explore</span>Jelajah</a><a href="random-pick.html" data-bn class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg font-label-sm text-label-sm text-text-muted"><span class="material-symbols-outlined text-[22px]">casino</span>Random</a><a href="surprise-box.html" data-bn class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg font-label-sm text-label-sm text-text-muted"><span class="material-symbols-outlined text-[22px]">redeem</span>Box</a><a href="riwayat.html" data-bn class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg font-label-sm text-label-sm text-text-muted"><span class="material-symbols-outlined text-[22px]">receipt_long</span>Pesanan</a></nav><script src="assets/nav-highlight.js"></script><script src="assets/uw-common.js"></script><script>(function(){
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const num=t=>+String(t).replace(/\D/g,'');
+const cards=$$('article').map(a=>{
+ const rps=$$('*',a).filter(e=>!e.children.length&&/^\s*Rp\s?[\d.]+\s*$/.test(e.textContent));
+ const og=rps.find(e=>/line-through/.test(e.className)),pr=rps.find(e=>e!==og);
+ const title=$('h3',a).textContent.trim(),store=$('span.uppercase',a).textContent.trim();
+ const tags=$$('span.rounded-md',a).map(s=>s.textContent.replace('✓','').trim()),all=a.textContent.replace(/\s+/g,' ');
+ const km=+(all.match(/([\d.]+) km/)||[0,9])[1],stock=+(all.match(/Sisa (\d+)/)||[0,1])[1];
+ const time=(all.match(/(\d\d:\d\d) - (\d\d:\d\d)/)||[''])[0];
+ const price=num(pr.textContent),orig=num(og.textContent);
+ const cat=/salad/i.test(title)?'sehat':/pastry|croissant|donut|sandwich|bread|brioche/i.test(title+store)?'bakery':'berat';
+ const img=$('img',a).src,desc=$('p',a).textContent.trim();
+ return{a,title,store,tags,tagText:tags.join(' ').toLowerCase(),km,stock,time,price,orig,cat,img,desc,disc:Math.round((1-price/orig)*100),start:+time.slice(0,2)};
+});
+const url=c=>'detail.html?'+new URLSearchParams({name:c.title,store:c.store,price:c.price,orig:c.orig,img:c.img,time:c.time,desc:c.desc,tags:c.tags.join('|'),km:c.km,cat:c.cat,stock:c.stock});
+cards.forEach(c=>{c.a.style.cursor='pointer';c.a.addEventListener('click',()=>location.href=url(c))});
+$$('button').forEach(b=>{if(/Klaim/.test(b.textContent)){const i=$$('button').filter(x=>/Klaim/.test(x.textContent)).indexOf(b);b.addEventListener('click',()=>location.href=url(cards[i]))}});
+/* filter */
+const rgI=document.querySelector('#budgetRange');const MAXB=rgI?+rgI.max:60000;
+const BR={15000:0,30000:15000,50000:30000};
+const st={budget:MAXB,min:0,cat:'all',diet:{},dist:99,time:'',q:new URLSearchParams(location.search).get('q')||'',sort:''};
+const catKey=t=>/semua/i.test(t)?'all':/pastry|bakery/i.test(t)?'bakery':/nasi|bento|berat/i.test(t)?'berat':/salad|sayur|sehat/i.test(t)?'sehat':'minum';
+const chips=$$('button').filter(b=>/rounded-full/.test(b.className)&&/\(\d+\)|Semua/.test(b.textContent)&&!/Klaim/.test(b.textContent));
+chips.forEach(b=>{const t=b.textContent.replace(/\s*\(\d+\)/,'');b.lastChild.textContent&&(b.lastChild.textContent=b.lastChild.textContent.replace(/\s*\(\d+\)/,''))});
+const side=$$('button').filter(b=>/w-full text-left/.test(b.className)&&/Kategori|Semua Kategori|Makanan Berat|Bakery|Minuman|Sayur/.test(b.textContent)&&!/Segera|Sore|Malam/.test(b.textContent));
+const timeBtns=$$('button').filter(b=>/Segera Habis|Sore \(|Malam \(/.test(b.textContent));
+const distBtns=$$('button').filter(b=>/^<\s*\d\s*km$/.test(b.textContent.trim()));
+const grid=cards[0].a.parentElement;
+const empty=document.createElement('div');empty.className='col-span-full bg-surface-card rounded-2xl p-space-xl text-center';empty.innerHTML='<span class="material-symbols-outlined text-[40px] text-text-muted">search_off</span><p class="font-title-md text-title-md font-bold mt-2">Belum ada menu yang cocok</p><p class="font-body-md text-body-md text-text-muted">Coba naikkan budget atau kurangi filter alergi &amp; diet. Menu hanya tampil jika tokonya mencantumkan label tersebut.</p>';
+empty.hidden=true;grid.appendChild(empty);
+const setOn=(b,on,cls)=>{const[a,o]=cls;a.split(' ').forEach(c=>b.classList.toggle(c,on));o.split(' ').forEach(c=>b.classList.toggle(c,!on))};
+const radios=$$('input[name=category_filter]');
+function apply(){
+ const dietBoxes=$$('input[type=checkbox]');
+ const keys={halal:'halal',kacang:'bebas kacang',gluten:'bebas gluten',vegetarian:'vegetarian',dairy:'dairy'};
+ const need=dietBoxes.filter(i=>i.checked).map(i=>{const t=i.closest('label').textContent.toLowerCase();return keys[Object.keys(keys).find(k=>t.includes(k))]}).filter(Boolean);
+ let n=0;
+ cards.forEach(c=>{
+  const ok=c.price>=st.min&&c.price<=st.budget&&(st.cat==='all'||c.cat===st.cat)&&c.km<=st.dist&&need.every(k=>c.tagText.includes(k))&&(c.title+c.store).toLowerCase().includes(st.q.toLowerCase())&&
+   (!st.time||(st.time==='segera'?c.stock<=2:st.time==='sore'?c.start<19:c.start>=19));
+  c.a.hidden=!ok;c.a.style.display=ok?'':'none';n+=ok;});
+ empty.hidden=n>0;
+ $$('*').filter(e=>!e.children.length&&/^\s*Menampilkan/.test(e.textContent)).forEach(e=>e.textContent=e.textContent.replace(/\d+ dari \d+/,n+' dari '+cards.length).replace(/Menampilkan \d+ menu/,'Menampilkan '+n+' menu'));
+ const sp=$$('p,span').find(e=>!e.children.length&&/^Menampilkan\s+\d+\s+dari/.test(e.textContent.trim()));
+ chips.forEach(b=>setOn(b,catKey(b.textContent)===st.cat,['bg-primary text-on-primary shadow-sm','bg-surface-container-low text-on-surface-variant']));
+ side.forEach(b=>setOn(b,catKey(b.textContent)===st.cat,['bg-surface-container-high/60 text-primary font-semibold','bg-surface-container-low text-on-surface-variant']));
+ timeBtns.forEach(b=>setOn(b,(/Segera/.test(b.textContent)?'segera':/Sore/.test(b.textContent)?'sore':'malam')===st.time,['bg-surface-container-high/60 text-primary font-semibold','bg-surface-container-low text-on-surface-variant']));
+ $$('.budget-pill').forEach(p=>setOn(p,+p.dataset.budget===st.budget&&(BR[p.dataset.budget]||0)===st.min,['bg-primary text-on-primary font-semibold','bg-surface-container text-on-surface-variant']));
+ distBtns.forEach(b=>setOn(b,num(b.textContent)===st.dist,['bg-primary text-on-primary font-bold','bg-surface-container text-text-primary font-medium']));
+ const act=(st.budget<MAXB||st.min>0)+(st.cat!=='all')+need.length+(st.dist<99)+(!!st.time);
+ const bd=$('#activeFilterBadge');if(bd)bd.textContent=act;
+ const bl=$('#budgetValueLabel');if(bl)bl.textContent=(st.min>0?UW.rp(st.min)+' - ':'')+UW.rp(st.budget);
+ const rgx=$('#budgetRange');if(rgx)rgx.value=st.budget;
+ radios.forEach(r=>{const lb=r.closest('label'),on=catKey(lb.textContent)===st.cat;r.checked=on;lb.classList.toggle('bg-surface-container-low',on)});
+}
+chips.concat(side).forEach(b=>b.addEventListener('click',()=>{st.cat=catKey(b.textContent);apply()}));
+radios.forEach(r=>r.addEventListener('change',()=>{st.cat=catKey(r.closest('label').textContent);apply()}));
+timeBtns.forEach(b=>b.addEventListener('click',()=>{const k=/Segera/.test(b.textContent)?'segera':/Sore/.test(b.textContent)?'sore':'malam';st.time=st.time===k?'':k;apply()}));
+distBtns.forEach(b=>b.addEventListener('click',()=>{st.dist=num(b.textContent);apply()}));
+const rg=$('#budgetRange');rg&&rg.addEventListener('input',()=>{st.budget=+rg.value;st.min=0;apply()});
+$$('.budget-pill').forEach(p=>p.addEventListener('click',()=>{const same=+p.dataset.budget===st.budget&&(BR[p.dataset.budget]||0)===st.min;st.budget=same?MAXB:+p.dataset.budget;st.min=same?0:(BR[p.dataset.budget]||0);apply()}));
+$$('input[type=checkbox]').forEach(i=>i.addEventListener('change',apply));
+const rs=$('#resetFiltersBtn');rs&&rs.addEventListener('click',()=>{st.budget=MAXB;st.min=0;rg&&(rg.value=MAXB);const bl=$('#budgetValueLabel');bl&&(bl.textContent=UW.rp(MAXB));st.cat='all';st.dist=99;st.time='';$$('input[type=checkbox]').forEach(i=>i.checked=false);apply()});
+const hs=$('header input[type=text]');if(hs){hs.value=st.q;hs.addEventListener('input',()=>{st.q=hs.value;apply()})}
+const sel=$('select');sel&&sel.addEventListener('change',()=>{const t=sel.options[sel.selectedIndex].text;const k=/murah/i.test(t)?'price':/diskon/i.test(t)?'disc':'km';[...cards].sort((x,y)=>k==='disc'?y.disc-x.disc:x[k]-y[k]).forEach(c=>grid.insertBefore(c.a,empty))});
+const pg=$$('button').find(b=>/Selanjutnya/.test(b.textContent));pg&&pg.closest('.bg-surface-card')&&(pg.closest('.bg-surface-card').hidden=true);
+const rb=$$('button').find(b=>/Ganti Radius/.test(b.textContent));rb&&rb.remove();
+$$('input[type=checkbox]').forEach(i=>i.checked=false);rg&&(rg.value=MAXB);{const bl=$('#budgetValueLabel');bl&&(bl.textContent=UW.rp(MAXB))}
+apply();
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <script src="../assets/static-shim.js"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard · Unwaste Mitra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <style>html,body{margin:0}body{overscroll-behavior:none}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}input[type=range]{accent-color:#2B6085}:focus-visible{outline:2px solid #5D8BB6;outline-offset:2px}</style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/tailwind-config.js"></script>
+    <script src="shared.js"></script>
+  </head>
+  <body>
+    <main></main>
+    <script>
+
+const {rp,esc,icon,$,$$}=UWT;
+const D=()=>UWT.db();
+const slotsOf=os=>{const m={};os.filter(o=>o.status!=='Batal').forEach(o=>{(m[o.slot]=m[o.slot]||[]).push(o)});return Object.entries(m).sort((a,b)=>a[0].localeCompare(b[0]))};
+UWT.boot({active:'dashboard',
+render(){
+ const s=D().shop,st=UWT.stats(),h=new Date().getHours();
+ const sapa=h<11?'Selamat Pagi':h<15?'Selamat Siang':h<18?'Selamat Sore':'Selamat Malam';
+ const live=D().listings.filter(l=>['aktif','habis','jeda'].includes(UWT.lstate(l)));
+ const recent=st.os.filter(o=>o.status!=='Batal').slice(0,4);
+ const slots=slotsOf(st.os);
+ const totalPor=st.sold+st.stock;
+ $('main').innerHTML=`
+ ${s.open?'':`<div class="mb-4 rounded-xl bg-error-container text-on-error-container px-4 py-3 text-body-md flex items-center gap-2">${icon('info','text-[20px]')}<span>Toko sedang <b>tutup</b> — konsumen tidak bisa memesan listing kamu. Pesanan yang sudah masuk tetap bisa diverifikasi.</span><button id="reopen" class="ml-auto font-bold underline whitespace-nowrap">Buka kembali</button></div>`}
+ <section class="rounded-2xl bg-gradient-to-br from-surface-container to-surface-container-low p-5 lg:p-7 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+  <div class="min-w-0"><div class="flex flex-wrap items-center gap-2 mb-2"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-card text-label-md font-semibold ${s.open?'text-discount-green':'text-error'}"><span class="w-2 h-2 rounded-full ${s.open?'bg-discount-green':'bg-error'}"></span>${s.open?'Toko Buka Aktif':'Toko Tutup'}</span><span class="inline-flex items-center gap-1 text-body-sm text-text-muted">${icon('schedule','text-[16px]')}Slot pengambilan: <b class="text-on-surface">${s.from} – ${s.to} WIB</b></span></div>
+   <h1 class="text-headline-md lg:text-headline-lg font-bold">${sapa}, <span class="text-primary">${esc(s.short)}</span>!</h1>
+   <p class="text-body-md text-on-surface-variant mt-1 max-w-xl">${st.waiting.length?`Ada <b>${st.waiting.length} pesanan</b> menunggu diambil dan <b>${st.stock} porsi</b> masih tersedia malam ini.`:`Belum ada pesanan menunggu. <b>${st.stock} porsi</b> masih tersedia malam ini.`}</p></div>
+  <div class="flex flex-col sm:flex-row lg:flex-col xl:flex-row items-stretch sm:items-center gap-3 shrink-0">
+   <a href="listing.html?new=1" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-primary text-on-primary text-label-lg font-bold shadow-md hover:opacity-95">${icon('add_circle','text-[20px]')}Tambah Listing Surplus</a></div>
+ </section>
+ <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-4">
+  ${UWT.stat('shopping_basket','Porsi terpesan hari ini',`${st.sold} <span class="text-body-lg font-medium text-text-muted">/ ${totalPor}</span>`,totalPor?Math.round(st.sold/totalPor*100)+'% dari stok malam ini':'')}
+  ${UWT.stat('payments','Pendapatan ekstra',rp(st.rev),'Dari '+st.ok.length+' pesanan aktif','text-primary')}
+  ${UWT.stat('shopping_bag','Siap diambil',`${st.waiting.length} <span class="text-body-lg font-medium text-text-muted">pesanan</span>`,st.waiting.length?'Menunggu kode verifikasi':'Semua sudah diambil','text-discount-orange')}
+  ${UWT.stat('eco','Dampak hari ini',st.co2.toFixed(1).replace('.',',')+' kg','CO₂e dicegah dari '+st.porDone+' porsi','text-discount-green')}
+ </section>
+ <div class="grid lg:grid-cols-[minmax(0,1fr)_380px] gap-4 mt-4">
+  <div class="flex flex-col gap-4 min-w-0">
+   <section class="bg-surface-card rounded-2xl p-5 lg:p-6 shadow-[0_1px_8px_rgba(0,0,0,.04)]">
+    <div class="flex items-start justify-between gap-3 mb-4"><div><h2 class="text-headline-sm font-bold">Stok Listing Malam Ini</h2><p class="text-body-sm text-text-muted">Atur sisa porsi sebelum jam penjemputan ditutup.</p></div><a href="listing.html" class="text-label-lg font-semibold text-primary whitespace-nowrap hover:underline">Kelola semua</a></div>
+    <div class="flex flex-col gap-3">${live.length?live.map(l=>{const k=UWT.lstate(l);return `<div class="flex flex-wrap sm:flex-nowrap items-center gap-3 p-3 rounded-xl bg-surface-container-low/60 ${k==='habis'?'opacity-90':''}">
+      <div class="relative w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-surface-container"><img src="${l.img}" alt="" class="w-full h-full object-cover ${k==='habis'?'grayscale':''}"/><span class="absolute top-1 left-1 text-[10px] font-bold bg-discount-orange text-white px-1.5 rounded">-${UWT.pct(l)}%</span></div>
+      <div class="min-w-0 flex-1"><p class="text-title-sm font-bold truncate">${esc(l.name)}</p><p class="text-body-sm text-text-muted"><b class="text-primary">${rp(l.price)}</b> <s>${rp(l.orig)}</s> · Pickup ${l.from}–${l.to}</p>
+       <p class="mt-1">${k==='habis'?'<span class="text-label-md font-semibold text-on-error-container bg-error-container px-2 py-0.5 rounded-full">Habis terjual</span>':k==='jeda'?'<span class="text-label-md font-semibold text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded-full">Dijeda · tidak tampil</span>':`<span class="text-label-md font-semibold text-primary bg-sky-blue/50 px-2 py-0.5 rounded-full">Sisa ${l.stock} porsi</span>`}</p></div>
+      ${k==='habis'?`<button data-restock="${l.id}" class="px-3 py-2 rounded-xl bg-sky-blue/60 text-on-primary-fixed text-label-lg font-bold inline-flex items-center gap-1">${icon('add','text-[18px]')}Restock</button>`:`<div class="flex items-center gap-1 bg-surface-card rounded-xl p-1 border border-border-subtle"><button data-dec="${l.id}" aria-label="Kurangi stok ${esc(l.name)}" class="w-9 h-9 rounded-lg hover:bg-surface-container flex items-center justify-center">${icon('remove','text-[20px]')}</button><span class="w-8 text-center font-bold" aria-live="polite">${l.stock}</span><button data-inc="${l.id}" aria-label="Tambah stok ${esc(l.name)}" class="w-9 h-9 rounded-lg hover:bg-surface-container flex items-center justify-center">${icon('add','text-[20px]')}</button></div>`}
+      <a href="listing.html?edit=${l.id}" aria-label="Edit ${esc(l.name)}" class="w-9 h-9 rounded-lg hover:bg-surface-container flex items-center justify-center text-text-muted">${icon('edit','text-[20px]')}</a></div>`}).join(''):`<p class="text-body-md text-text-muted py-6 text-center">Belum ada listing tayang. <a href="listing.html?new=1" class="text-primary font-bold">Buat listing pertama</a></p>`}</div>
+   </section>
+   <section class="bg-surface-card rounded-2xl p-5 lg:p-6 shadow-[0_1px_8px_rgba(0,0,0,.04)]">
+    <h2 class="text-headline-sm font-bold">Jadwal Penjemputan</h2><p class="text-body-sm text-text-muted mb-4">Jumlah pembeli per jam ambil yang mereka pilih di aplikasi.</p>
+    ${slots.length?`<div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">${slots.map(([sl,os])=>{const d=os.filter(o=>o.status==='Selesai').length;return `<a href="pesanan.html" class="block p-3 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors"><div class="flex justify-between items-center"><b class="text-label-lg">${sl}</b><span class="text-label-sm bg-surface-card px-2 py-0.5 rounded-full font-bold">${os.length} pesanan</span></div><div class="flex justify-between text-body-sm text-text-muted mt-2"><span>Sudah diambil</span><b class="text-on-surface">${d} / ${os.length}</b></div><div class="h-1.5 rounded-full bg-surface-card mt-1.5 overflow-hidden"><div class="h-full rounded-full ${d===os.length?'bg-discount-green':'bg-primary'}" style="width:${d/os.length*100}%"></div></div></a>`}).join('')}</div>`:'<p class="text-body-md text-text-muted">Belum ada pesanan masuk.</p>'}
+    <p class="mt-4 rounded-xl bg-surface-container-low px-4 py-3 text-body-sm text-on-surface-variant flex gap-2">${icon('info','text-[18px] text-primary')}Anjurkan konsumen membawa kantong sendiri dan menunjukkan kode reservasi sebelum paket diserahkan.</p>
+   </section>
+  </div>
+  <aside class="flex flex-col gap-4">
+   <section class="bg-surface-card rounded-2xl p-5 lg:p-6 shadow-[0_1px_8px_rgba(0,0,0,.04)]">
+    <h2 class="text-headline-sm font-bold flex items-center gap-2">${icon('qr_code_scanner','text-primary')}Verifikasi Reservasi</h2>
+    <p class="text-body-sm text-text-muted mt-1 mb-3">Saat konsumen tiba di kasir, ketik kode yang ada di aplikasinya.</p>
+    <form id="vForm" class="flex flex-col gap-3"><label class="text-label-md text-text-muted uppercase tracking-wide" for="vCode">Kode reservasi</label><input id="vCode" autocomplete="off" maxlength="8" placeholder="UW-XXXX" class="w-full rounded-xl bg-surface-container-low border border-transparent focus:border-primary px-4 py-3 text-title-md font-bold tracking-widest uppercase placeholder:text-outline-variant placeholder:font-normal"/>
+    <button class="py-3 rounded-xl bg-primary text-on-primary text-label-lg font-bold inline-flex items-center justify-center gap-2">${icon('check_circle','text-[20px]')}Validasi</button></form>
+   </section>
+   <section class="bg-surface-card rounded-2xl p-5 lg:p-6 shadow-[0_1px_8px_rgba(0,0,0,.04)]">
+    <div class="flex justify-between items-center mb-3"><h2 class="text-headline-sm font-bold">Pesanan Terbaru</h2><a href="pesanan.html" class="text-label-lg font-semibold text-primary hover:underline">Lihat semua</a></div>
+    <div class="flex flex-col gap-2">${recent.length?recent.map(o=>{const c=UWT.statusChip(o.status),p=UWT.payInfo(o);return `<a href="pesanan.html?code=${o.code}" class="block p-3 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors"><div class="flex justify-between gap-2"><b class="text-label-lg truncate">${esc(o.buyer)}</b><span class="text-body-sm text-text-muted whitespace-nowrap">${UWT.ago(o.ts)}</span></div><p class="text-body-sm text-on-surface-variant truncate">${o.qty}× ${esc(o.name)}</p><div class="flex justify-between items-center mt-1.5 gap-2"><span class="text-label-sm font-bold px-2 py-0.5 rounded-full ${c[1]}">${c[0]}</span><span class="text-label-sm font-mono text-text-muted">${o.code}</span></div></a>`}).join(''):'<p class="text-body-md text-text-muted">Belum ada pesanan.</p>'}</div>
+   </section>
+   <section class="rounded-2xl bg-surface-container p-5 lg:p-6"><p class="text-label-md font-bold text-primary uppercase tracking-wide flex items-center gap-1.5">${icon('lightbulb','text-[18px]')}Tips Bakery</p><h3 class="text-title-md font-bold mt-1">Metode ‘par-bake’ di sore hari</h3><p class="text-body-sm text-on-surface-variant mt-1">Panggang setengah matang setelah jam 17:00 dan selesaikan saat display mulai menipis agar surplus berkurang.</p></section>
+  </aside>
+ </div>`;
+},
+after(){
+ const db=UWT.db();
+ const r=$('#reopen');r&&(r.onclick=()=>{db.shop.open=true;UWT.save();UWT.refresh()});
+ $('#vForm').onsubmit=e=>{e.preventDefault();UWT.verify($('#vCode').value)};
+ $$('[data-inc],[data-dec]').forEach(b=>b.onclick=()=>{const l=UWT.listing(b.dataset.inc||b.dataset.dec);const d=b.dataset.inc?1:-1;l.stock=Math.max(0,Math.min(99,l.stock+d));UWT.save();if(l.stock===0)UWT.toast(l.name+' ditandai habis');UWT.refresh()});
+ $$('[data-restock]').forEach(b=>b.onclick=()=>{const l=UWT.listing(b.dataset.restock);
+  const m=UWT.modal(`<h2 class="text-headline-sm font-bold mb-1">Restock porsi</h2><p class="text-body-md text-text-muted mb-4">${esc(l.name)}</p><label class="text-label-md text-text-muted" for="rsQ">Jumlah porsi tersedia</label><input id="rsQ" type="number" min="1" max="99" value="3" class="w-full mt-1 mb-4 rounded-xl bg-surface-container-low px-4 py-3 text-title-md font-bold"/><div class="grid grid-cols-2 gap-2"><button id="rsNo" class="py-3 rounded-xl bg-surface-container text-label-lg font-bold">Batal</button><button id="rsYes" class="py-3 rounded-xl bg-primary text-on-primary text-label-lg font-bold">Tayangkan lagi</button></div>`);
+  $('#rsNo',m).onclick=UWT.close;$('#rsYes',m).onclick=()=>{const q=+$('#rsQ',m).value;if(!(q>=1&&q<=99)){UWT.toast('Isi jumlah 1–99');return}l.stock=q;l.status='aktif';UWT.save();UWT.close();UWT.toast('Listing tayang lagi dengan '+q+' porsi');UWT.refresh()}})}
+});
+
+</script>
+  </body>
+</html>
